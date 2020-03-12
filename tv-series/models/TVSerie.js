@@ -1,7 +1,7 @@
 import { ObjectID } from 'mongodb'
-class Movie {
+class TVSerie {
 
-  static addMovie (collection, params) {
+  static addSerieMovie (collection, params) {
     return collection.insertOne({
       title: params.title,
       overview: params.overview,
@@ -11,11 +11,11 @@ class Movie {
     })
   }
 
-  static fetchMovies (collection) {
+  static fetchSerieMovies (collection) {
     return collection.find({}).toArray()
   }
 
-  static updateMovie (collection, params) {
+  static updateSerieMovie (collection, params) {
     const { id, title, overview, poster_path, popularity, tags } = params
     return collection.updateOne({ _id: ObjectID(id) },
       {
@@ -24,10 +24,10 @@ class Movie {
       })
   }
 
-  static deleteMovie (collection, id) {
+  static deleteSerieMovie (collection, id) {
     return collection.deleteOne({ _id: ObjectID(id) })
   }
 
 }
 
-export default Movie
+export default TVSerie

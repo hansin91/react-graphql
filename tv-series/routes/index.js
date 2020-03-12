@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import movieRoutes from './movie'
+import tvSerieRoutes from './tvserie'
 const router = Router()
 
-router.use('/movies', movieRoutes)
+router.use('/tvseries', tvSerieRoutes)
 export default router

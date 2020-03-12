@@ -1,4 +1,4 @@
-import { Router } from '../node_modules/express'
+import { Router } from 'express'
 import MovieController from '../controllers/movie'
 const router = Router()
 

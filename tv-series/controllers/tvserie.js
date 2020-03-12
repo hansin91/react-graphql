@@ -1,22 +1,22 @@
-import Movie from '../models/Movie'
+import TVSerie from '../models/TVSerie'
 
-class MovieController {
-  static fetchMovies (req, res, next) {
+class TVSeriController {
+  static fetchSerieMovies (req, res, next) {
     const db = req.db
-    const movieCollection = db.collection('movies')
-    Movie.fetchMovies(movieCollection)
+    const tvSerieCollection = db.collection('tvSeries')
+    TVSerie.fetchSerieMovies(tvSerieCollection)
       .then(response => {
         res.status(200).json({
           status: 200,
-          movies: response
+          tvSeries: response
         })
       })
       .catch(err => next(err))
   }
 
-  static insertMovie (req, res, next) {
+  static insertSerieMovie (req, res, next) {
     const db = req.db
-    const movieCollection = db.collection('movies')
+    const tvSerieCollection = db.collection('tvSeries')
     const { title, overview, poster_path, popularity, tags } = req.body
     const params = {
       title,
@@ -25,12 +25,12 @@ class MovieController {
       popularity,
       tags
     }
-    Movie.addMovie(movieCollection, params)
+    TVSerie.addSerieMovie(tvSerieCollection, params)
       .then(response => {
         res.status(201).json({
           status: 201,
-          newMovie: response.ops[0],
-          message: 'Insert movie successfully'
+          newTvSerie: response.ops[0],
+          message: 'Insert serie movie successfully'
         })
       })
       .catch(err => {
@@ -38,9 +38,9 @@ class MovieController {
       })
   }
 
-  static updateMovie (req, res, next) {
+  static updateSerieMovie (req, res, next) {
     const db = req.db
-    const movieCollection = db.collection('movies')
+    const tvSerieCollection = db.collection('tvSeries')
     const { title, overview, poster_path, popularity, tags } = req.body
     const { id } = req.params
     const params = {
@@ -51,19 +51,19 @@ class MovieController {
       popularity,
       tags
     }
-    Movie.updateMovie(movieCollection, params)
+    TVSerie.updateSerieMovie(tvSerieCollection, params)
       .then(response => {
         const { n } = response.result
         if (n) {
           res.status(200).json({
             status: 200,
-            message: 'Update movie with id ' + id + ' successfully'
+            message: 'Update serie movie with id ' + id + ' successfully'
           })
         } else {
           next({
             status: 404,
             name: 'NOT_FOUND',
-            message: 'Movie is not found'
+            message: 'Serie movie is not found'
           })
         }
       })
@@ -73,22 +73,22 @@ class MovieController {
       })
   }
 
-  static deleteMovie (req, res, next) {
+  static deleteSerieMovie (req, res, next) {
     const db = req.db
-    const movieCollection = db.collection('movies')
-    Movie.deleteMovie(movieCollection, req.params.id)
+    const tvSerieCollection = db.collection('tvSeries')
+    TVSerie.deleteSerieMovie(tvSerieCollection, req.params.id)
       .then(response => {
         const deletedCount = response.deletedCount
         if (deletedCount) {
           res.status(200).json({
             status: 200,
-            message: 'Delete movie successfully'
+            message: 'Delete serie movie successfully'
           })
         } else {
           next({
             status: 404,
             name: 'NOT_FOUND',
-            message: 'Movie is not found'
+            message: 'Serie movie is not found'
           })
         }
       })
@@ -98,4 +98,4 @@ class MovieController {
   }
 }
 
-export default MovieController
+export default TVSeriController

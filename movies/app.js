@@ -1,12 +1,12 @@
-import express from './node_modules/express'
-import dotenv from './node_modules/dotenv/types'
-import { MongoClient } from './node_modules/mongodb'
+import express from 'express'
+import dotenv from 'dotenv'
+import { MongoClient } from 'mongodb'
 import routes from './routes'
 import errorHandler from './middlewares/errorHandler'
 if (process.env.NODE_ENV === 'development') {
   dotenv.config()
 }
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 4001
 const app = express()
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
