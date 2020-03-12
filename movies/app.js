@@ -1,0 +1,35 @@
+import express from './node_modules/express'
+import dotenv from './node_modules/dotenv/types'
+import { MongoClient } from './node_modules/mongodb'
+import routes from './routes'
+import errorHandler from './middlewares/errorHandler'
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config()
+}
+const PORT = process.env.PORT || 4000
+const app = express()
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+const client = new MongoClient(process.env.BASE_URL)
+client.connect((err) => {
+  if (err) {
+    console.log('Error connection ' + err)
+  } else {
+    console.log('Success connection')
+    const db = client.db(process.env.DB_NAME)
+    app.use((req, res, next) => {
+      req.db = db
+      next()
+    })
+    app.use(routes)
+    app.use(errorHandler)
+    app.listen(PORT, () => {
+      console.log('Server is listening on PORT ' + PORT)
+    })
+  }
+})
+
+
+
+
+
