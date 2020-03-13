@@ -1,0 +1,21 @@
+{
+  "name": "orchestrator-graphql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js --ext js,graphql --exec babel-node",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Hansin Susatya",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.11.0",
+    "axios": "^0.19.2",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "graphql": "^14.6.0",
+    "ioredis": "^4.16.0"
+  }
+}

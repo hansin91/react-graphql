@@ -28,6 +28,10 @@ class Movie {
     return collection.deleteOne({ _id: ObjectID(id) })
   }
 
+  static findOne (collection, id) {
+    return collection.findOne({ _id: ObjectID(id) })
+  }
+
 }
 
 export default Movie

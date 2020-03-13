@@ -96,6 +96,22 @@ class TVSeriController {
         next(err)
       })
   }
+
+  static findOne (req, res, next) {
+    const db = req.db
+    const tvSerieCollection = db.collection('tvSeries')
+    const id = req.params.id
+    TVSerie.findOne(tvSerieCollection, id)
+      .then(response => {
+        res.status(200).json({
+          status: 200,
+          tvSeries: response
+        })
+      })
+      .catch(err => {
+        next(err)
+      })
+  }
 }
 
 export default TVSeriController

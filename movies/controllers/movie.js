@@ -96,6 +96,22 @@ class MovieController {
         next(err)
       })
   }
+
+  static findOne (req, res, next) {
+    const db = req.db
+    const id = req.params.id
+    const movieCollection = db.collection('movies')
+    Movie.findOne(movieCollection, id)
+      .then(response => {
+        res.status(200).json({
+          status: 200,
+          movie: response
+        })
+      })
+      .catch(err => {
+        next(err)
+      })
+  }
 }
 
 export default MovieController
