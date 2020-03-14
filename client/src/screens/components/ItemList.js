@@ -3,16 +3,17 @@ import { View, ScrollView } from 'react-native'
 import { Text } from 'react-native-elements'
 import Item from './Item'
 
-function ItemList ({ movies, title }) {
+function ItemList ({ data, title }) {
   return (
     <View style={{ marginTop: 30 }}>
       <Text style={{
         marginLeft: 10,
+        fontSize: 18,
         color: '#e5e5e5',
         fontWeight: 'bold'
-      }} h4>{title}</Text>
+      }}>{title}</Text>
       <ScrollView horizontal={true} style={{ flexDirection: 'row', marginRight: 10 }}>
-        {movies.map((movie) => <Item key={movie._id} movie={movie} />)}
+        {data.map((el) => <Item key={el._id} data={el} />)}
       </ScrollView>
     </View>
   )

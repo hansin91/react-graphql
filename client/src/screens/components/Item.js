@@ -5,7 +5,7 @@ function Item (props) {
   return (
     <View>
       <Tile
-        imageSrc={{ uri: props.movie.poster_path }}
+        imageSrc={{ uri: props.data.poster_path }}
         featured
         containerStyle={{ margin: 10 }}
         width={200}

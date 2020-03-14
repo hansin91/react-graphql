@@ -3,28 +3,28 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useQuery } from '@apollo/react-hooks'
 import { Button } from 'react-native-elements'
 import ItemList from './ItemList'
-import { FETCH_MOVIES } from '../../apollo/query'
-import { setLoadingMovies, setErrorMovies, setMovies } from '../../redux/actions'
+import { FETCH_TV_SERIES } from '../../apollo/query'
+import { setLoadingTVSeries, setErrorTVSeries, setTVSeries } from '../../redux/actions'
 import CircularLoading from '../../components/CircularLoading'
 import { View } from 'react-native'
 
-function Movies () {
+function TVSeries () {
   const dispatch = useDispatch()
-  const { loading, error, data } = useQuery(FETCH_MOVIES)
+  const { loading, error, data } = useQuery(FETCH_TV_SERIES)
   if (loading) {
-    dispatch(setLoadingMovies(loading))
+    dispatch(setLoadingTVSeries(loading))
   } else if (error) {
-    dispatch(setErrorMovies(error))
+    dispatch(setErrorTVSeries(error))
   } else {
-    dispatch(setMovies(data))
-    dispatch(setLoadingMovies(loading))
+    dispatch(setTVSeries(data))
+    dispatch(setLoadingTVSeries(loading))
   }
-  const movies = useSelector((state) => state.movie.movies)
+  const tvSeries = useSelector((state) => state.tvSerie.tvSeries)
 
   if (loading) return <CircularLoading />
-  if (movies && movies.length > 0) return (
-    <View>
-      <ItemList title="Movies" data={movies.slice(0, 5)} />
+  if (tvSeries && tvSeries.length > 0) return (
+    <View style={{ marginBottom: 20 }}>
+      <ItemList title="TV Series" data={tvSeries.slice(0, 5)} />
       <Button
         containerStyle={{
           marginTop: 20,
@@ -39,4 +39,4 @@ function Movies () {
   )
 }
 
-export default Movies
+export default TVSeries

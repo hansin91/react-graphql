@@ -6,12 +6,16 @@ import HeaderScreen from '../components/Header'
 
 const Stack = createStackNavigator()
 
-function Home () {
+function Home ({ navigation }) {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home"
         component={HomeScreen}
-        options={{ header: props => <HeaderScreen title="Entertainme !" {...props} /> }}
+        options={{
+          header: props => <HeaderScreen
+            navigation={navigation}
+            title="Entertainme !" {...props} />
+        }}
       ></Stack.Screen>
     </Stack.Navigator>
   )
