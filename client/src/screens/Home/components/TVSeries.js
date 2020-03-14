@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useQuery } from '@apollo/react-hooks'
 import { Button } from 'react-native-elements'
 import ItemList from './ItemList'
-import { FETCH_TV_SERIES } from '../../apollo/query'
-import { setLoadingTVSeries, setErrorTVSeries, setTVSeries } from '../../redux/actions'
-import CircularLoading from '../../components/CircularLoading'
+import { FETCH_TV_SERIES } from '../../../apollo/query'
+import { setLoadingTVSeries, setErrorTVSeries, setTVSeries } from '../../../redux/actions'
+import CircularLoading from '../../../components/CircularLoading'
 import { View } from 'react-native'
 
 function TVSeries () {
@@ -32,6 +32,7 @@ function TVSeries () {
           paddingRight: 20
         }}
         title="Load more"
+        buttonStyle={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
         titleStyle={{ color: '#fff' }}
         type="outline"
       />

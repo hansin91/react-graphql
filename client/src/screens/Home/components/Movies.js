@@ -3,13 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useQuery } from '@apollo/react-hooks'
 import { Button } from 'react-native-elements'
 import ItemList from './ItemList'
-import { FETCH_MOVIES } from '../../apollo/query'
-import { setLoadingMovies, setErrorMovies, setMovies } from '../../redux/actions'
-import CircularLoading from '../../components/CircularLoading'
+import { FETCH_MOVIES } from '../../../apollo/query'
+import { setLoadingMovies, setErrorMovies, setMovies } from '../../../redux/actions'
+import CircularLoading from '../../../components/CircularLoading'
 import { View } from 'react-native'
 
-function Movies () {
+function Movies ({ navigation }) {
   const dispatch = useDispatch()
+  const goToMovies = () => {
+    navigation.navigate('Movies')
+  }
   const { loading, error, data } = useQuery(FETCH_MOVIES)
   if (loading) {
     dispatch(setLoadingMovies(loading))
@@ -32,6 +35,8 @@ function Movies () {
           paddingRight: 20
         }}
         title="Load more"
+        onPress={goToMovies}
+        buttonStyle={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
         titleStyle={{ color: '#fff' }}
         type="outline"
       />

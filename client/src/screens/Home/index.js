@@ -5,12 +5,12 @@ import Movies from './components/Movies'
 import ImageSlider from './components/ImageSlider'
 import TVSeries from './components/TVSeries'
 
-function Home () {
+function Home ({ navigation }) {
   return (
     <Container style={{ backgroundColor: '#141414' }}>
       <ScrollView style={{ marginTop: 0 }}>
         <ImageSlider />
-        <Movies />
+        <Movies navigation={navigation} />
         <TVSeries />
       </ScrollView>
     </Container>
