@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 4001
 const app = express()
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
-const client = new MongoClient(process.env.BASE_URL)
+const client = new MongoClient(process.env.BASE_URL, { useUnifiedTopology: true })
 client.connect((err) => {
   if (err) {
     console.log('Error connection ' + err)

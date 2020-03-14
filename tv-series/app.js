@@ -13,7 +13,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-const client = new MongoClient(process.env.BASE_URL)
+const client = new MongoClient(process.env.BASE_URL, { useUnifiedTopology: true })
 client.connect((err) => {
   if (err) {
     console.log('Error connection ', err)
