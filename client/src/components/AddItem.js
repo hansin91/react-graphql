@@ -7,29 +7,58 @@ import {
   StyleSheet,
   StatusBar,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native'
 import { Form } from 'native-base'
 import { Input, Image } from 'react-native-elements'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
+import { useMutation } from '@apollo/react-hooks'
+import { ADD_MOVIE } from '../apollo/Mutation'
+import { FETCH_MOVIES } from '../apollo/Query'
+import useInputState from '../hooks/useInputState'
+import imgurAPI from '../api/imgurAPI'
 
-function AddItem ({ isVisible, closeModal }) {
+function AddItem ({ isVisible, closeModal, type }) {
   const [tags, setTags] = useState([])
   const [displayTags, setDisplayTags] = useState('')
-  const [filePath, setFilePath] = useState({ data: '', uri: '' })
+  const [filePath, setFilePath] = useState('')
   const [fileData, setFileData] = useState('')
   const [fileUri, setFileUri] = useState('')
+  const [title, handleInputTitle, resetTitle] = useInputState('')
+  const [overview, handleInputOverview, resetOverview] = useInputState('')
+  const [popularity, handleInputPopularity, resetPopularity] = useInputState('')
+  const [tag, handleInputTag, resetTag] = useInputState('')
+  const [addMovie,
+    { loading: addMovieLoading,
+      error: addMovieError }] = useMutation(
+        ADD_MOVIE,
+        {
+          update (cache, { data: { addMovie } }) {
+            const { movies } = cache.readQuery({ query: FETCH_MOVIES })
+            cache.writeQuery({
+              query: FETCH_MOVIES,
+              data: { movies: movies.concat([addMovie]) }
+            })
+          }
+        }
+      )
+
   const addTag = (e) => {
+    resetTag()
     const newTags = [...tags]
-    newTags.push(e.nativeEvent.text)
+    newTags.push(tag)
     setTags(newTags)
     setDisplayTags(newTags.join(','))
   }
 
-  const closeModalAdd = () => {
-    closeModal()
+  const reset = () => {
     setDisplayTags('')
     setTags([])
+  }
+
+  const closeModalAdd = () => {
+    closeModal()
+    reset()
   }
 
   const renderFileData = () => {
@@ -70,8 +99,6 @@ function AddItem ({ isVisible, closeModal }) {
       },
     }
     ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response)
-
       if (response.didCancel) {
         console.log('User cancelled image picker')
       } else if (response.error) {
@@ -80,17 +107,45 @@ function AddItem ({ isVisible, closeModal }) {
         console.log('User tapped custom button: ', response.customButton)
         alert(response.customButton)
       } else {
-        const source = { uri: response.uri }
-
+        // const source = { uri: response.uri }
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-        // alert(JSON.stringify(response));s
-        console.log('response', JSON.stringify(response.data))
         setFilePath(response)
         setFileUri(response.uri)
         setFileData(response.data)
       }
     })
+  }
+
+
+  const saveItem = () => {
+    try {
+      imgurAPI({
+        method: 'POST',
+        data: {
+          image: fileData,
+          title
+        }
+      })
+        .then(response => {
+          const newItem = {
+            title,
+            popularity: +popularity,
+            overview,
+            tags,
+            poster_path: response.data.data.link,
+            delete_hash: response.data.data.deletehash
+          }
+          if (type === 'movie') {
+            addMovie({ variables: { input: newItem } })
+          }
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -131,6 +186,7 @@ function AddItem ({ isVisible, closeModal }) {
                 label="Title"
                 multiline={true}
                 placeholder='Title'
+                onChange={handleInputTitle}
                 labelStyle={styles.labelInput}
                 inputStyle={{ fontSize: 15 }}
               />
@@ -139,6 +195,7 @@ function AddItem ({ isVisible, closeModal }) {
                 labelStyle={styles.labelInput}
                 multiline={true}
                 placeholder='Overview'
+                onChange={handleInputOverview}
                 inputStyle={{ fontSize: 15 }}
               />
               <Input
@@ -146,6 +203,7 @@ function AddItem ({ isVisible, closeModal }) {
                 labelStyle={styles.labelInput}
                 placeholder='Popularity'
                 keyboardType='numeric'
+                onChange={handleInputPopularity}
                 inputStyle={{ fontSize: 15 }}
               />
               <View>
@@ -153,7 +211,9 @@ function AddItem ({ isVisible, closeModal }) {
                   label="Tags"
                   labelStyle={styles.labelInput}
                   placeholder="Tags"
+                  onChange={handleInputTag}
                   inputStyle={{ fontSize: 15 }}
+                  defaultValue={tag}
                   onSubmitEditing={addTag} />
                 <Text style={{ paddingLeft: 10 }}>{displayTags}</Text>
               </View>
@@ -188,32 +248,10 @@ function AddItem ({ isVisible, closeModal }) {
                 justifyContent: 'flex-end'
               }}>
                 <TouchableOpacity onPress={closeModalAdd} style={{ marginRight: 20 }}>
-                  <Text style={{
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingLeft: 15,
-                    paddingRight: 15,
-                    color: '#E50914',
-                    fontSize: 15,
-                    borderRadius: 10,
-                    backgroundColor: 'transparent',
-                    borderColor: '#E50914',
-                    borderWidth: 1
-                  }}>Close</Text>
+                  <Text style={[styles.btnFooterModal, styles.btnFooterModalClose]}>Close</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ marginRight: 20 }}>
-                  <Text style={{
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingLeft: 15,
-                    paddingRight: 15,
-                    color: '#fff',
-                    fontSize: 15,
-                    borderRadius: 10,
-                    backgroundColor: '#E50914',
-                    borderColor: '#E50914',
-                    borderWidth: 1
-                  }}>Save</Text>
+                <TouchableOpacity onPress={saveItem} style={{ marginRight: 20 }}>
+                  <Text style={[styles.btnFooterModal, styles.btnFooterModalSave]}>Save</Text>
                 </TouchableOpacity>
               </View>
             </Form>
@@ -262,6 +300,25 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontSize: 14,
     fontWeight: 'bold'
+  },
+  btnFooterModal: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 15,
+    paddingRight: 15,
+    fontSize: 15,
+    borderRadius: 10,
+    borderWidth: 1
+  },
+  btnFooterModalClose: {
+    color: '#E50914',
+    backgroundColor: 'transparent',
+    borderColor: '#E50914'
+  },
+  btnFooterModalSave: {
+    color: '#fff',
+    backgroundColor: '#E50914',
+    borderColor: '#E50914'
   }
 })
 export default AddItem

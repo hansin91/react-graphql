@@ -1,7 +1,8 @@
-import { getMovies } from './movie'
+import { getMovies, getMovie } from './movie'
 import { getTVSeries } from './tvserie'
 const Query = {
   getMovies,
-  getTVSeries
+  getMovie,
+  getTVSeries,
 }
 export default Query

@@ -2,13 +2,21 @@ import React from 'react'
 import { View, ActivityIndicator, Text, TouchableOpacity } from 'react-native'
 import { Image, Icon } from 'react-native-elements'
 
-function Item ({ data }) {
+function Item ({ data, type, navigation }) {
+
+  const goToDetail = () => {
+    navigation.navigate('Detail', {
+      id: data._id,
+      type
+    })
+  }
+
   return (
     <View style={{
       flexDirection: 'row',
       flex: 1
     }}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={goToDetail}>
         <Image
           source={{ uri: data.poster_path }}
           style={{ width: 200, height: 200 }}

@@ -7,10 +7,12 @@ const typeDef = gql`
     poster_path: String!
     popularity: Float!
     tags: [String!]!
+    delete_hash: String
   }
 
   extend type Query {
     getMovies: [Movie]!
+    getMovie(id: ID!): Movie!
   }
 
   extend type Mutation {
@@ -33,6 +35,7 @@ const typeDef = gql`
     poster_path: String!
     popularity: Float!
     tags: [String!]!
+    delete_hash: String
   }
 `
 export default typeDef

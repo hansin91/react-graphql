@@ -7,6 +7,7 @@ const typeDef = gql`
     poster_path: String!
     popularity: Float!
     tags: [String!]!
+    delete_hash: String
   }
 
   extend type Query {

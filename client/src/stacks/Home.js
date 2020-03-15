@@ -2,7 +2,6 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import HeaderScreen from '../components/Header'
 import HomeScreen from '../screens/Home'
-import MovieScreen from '../screens/Movies'
 import Movie from '../stacks/Movie'
 const Stack = createStackNavigator()
 function Home ({ navigation }) {

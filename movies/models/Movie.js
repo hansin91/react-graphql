@@ -7,7 +7,8 @@ class Movie {
       overview: params.overview,
       poster_path: params.poster_path,
       popularity: params.popularity,
-      tags: params.tags
+      tags: params.tags,
+      delete_hash: params.delete_hash
     })
   }
 

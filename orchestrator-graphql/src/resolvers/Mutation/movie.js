@@ -6,10 +6,7 @@ export const addMovie = async (_, { input }) => {
     const { data } = await movieAPI({
       method: 'POST',
       url: '/',
-      data: input,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+      data: input
     })
     await redis.del('movies')
     return data.newMovie

@@ -1,6 +1,7 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import MovieScreen from '../screens/Movies'
+import MovieDetail from '../screens/MovieDetail.js'
 const Stack = createStackNavigator()
 function Movie () {
   return (
@@ -18,6 +19,20 @@ function Movie () {
           },
         }}
       ></Stack.Screen>
+      <Stack.Screen name="Detail"
+        component={MovieDetail}
+        options={{
+          title: 'Detail',
+          headerStyle: {
+            backgroundColor: '#E50914',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
+      </Stack.Screen>
     </Stack.Navigator>
   )
 }

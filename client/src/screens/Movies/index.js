@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, Text } from 'react-native'
-import { Container } from 'native-base'
+import { Container, View } from 'native-base'
 import { useSelector, useDispatch } from 'react-redux'
 import { useQuery } from '@apollo/react-hooks'
-import { FETCH_MOVIES } from '../../apollo/query'
+import { FETCH_MOVIES } from '../../apollo/Query'
 import ItemList from '../../components/ItemList'
 import { setLoadingMovies, setErrorMovies, setMovies } from '../../redux/actions'
 import AddItem from '../../components/AddItem'
@@ -32,7 +32,7 @@ function MovieScreen ({ navigation }) {
   if (movies && movies.length) {
     return (
       <Container style={{ padding: 15, backgroundColor: '#141414' }}>
-        <AddItem isVisible={isOpen} closeModal={closeModal} />
+        <AddItem isVisible={isOpen} type="movie" closeModal={closeModal} />
         <TouchableOpacity>
           <Text onPress={openModal} style={{
             paddingTop: 10,
@@ -49,8 +49,14 @@ function MovieScreen ({ navigation }) {
             borderRadius: 10,
           }}>Add Movie</Text>
         </TouchableOpacity>
-        <ItemList data={movies} />
+        <ItemList type="movie" navigation={navigation} data={movies} />
       </Container>
+    )
+  } else {
+    return (
+      <View>
+        <Text></Text>
+      </View>
     )
   }
 }

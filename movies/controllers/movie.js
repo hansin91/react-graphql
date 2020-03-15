@@ -17,13 +17,14 @@ class MovieController {
   static insertMovie (req, res, next) {
     const db = req.db
     const movieCollection = db.collection('movies')
-    const { title, overview, poster_path, popularity, tags } = req.body
+    const { title, overview, poster_path, popularity, tags, delete_hash } = req.body
     const params = {
       title,
       overview,
       poster_path,
       popularity,
-      tags
+      tags,
+      delete_hash
     }
     Movie.addMovie(movieCollection, params)
       .then(response => {

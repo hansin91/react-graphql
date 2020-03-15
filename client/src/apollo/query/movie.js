@@ -12,3 +12,17 @@ export const FETCH_MOVIES = gql`
   }
 }
 `
+
+export const FETCH_MOVIE = gql`
+  query GetMovie ($id: ID!)
+  {
+    getMovie(id: $id){
+      _id
+      title
+      overview
+      poster_path
+      popularity
+      tags
+    }
+  }
+`
