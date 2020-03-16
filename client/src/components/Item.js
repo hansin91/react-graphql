@@ -20,6 +20,7 @@ function Item ({ data, type, navigation }) {
         <Image
           source={{ uri: data.poster_path }}
           style={{ width: 200, height: 200 }}
+          resizeMethod='scale'
           containerStyle={{ paddingRight: 10, paddingBottom: 30 }}
           PlaceholderContent={<ActivityIndicator />}
         />
@@ -58,6 +59,7 @@ function Item ({ data, type, navigation }) {
             color: '#fff',
             paddingTop: 3,
             paddingBottom: 3,
+            textTransform: 'capitalize',
             paddingRight: 5,
             paddingLeft: 5,
             backgroundColor: '#E50914',

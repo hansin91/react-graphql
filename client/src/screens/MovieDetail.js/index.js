@@ -15,7 +15,9 @@ function MovieDetail ({ route, navigation }) {
 
   if (loading) return <CircularLoading />
   return (
-    <Container style={{ backgroundColor: '#141414' }}>
+    <Container style={{
+      backgroundColor: '#141414',
+    }}>
       <ScrollView>
         <ItemDetail type={type} data={data.getMovie} />
       </ScrollView>
