@@ -1,4 +1,5 @@
 import Movie from '../models/Movie'
+import axios from 'axios'
 
 class MovieController {
   static fetchMovies (req, res, next) {
@@ -108,25 +109,46 @@ class MovieController {
   static deleteMovie (req, res, next) {
     const db = req.db
     const movieCollection = db.collection('movies')
-    Movie.deleteMovie(movieCollection, req.params.id)
-      .then(response => {
-        const deletedCount = response.deletedCount
-        if (deletedCount) {
-          res.status(200).json({
-            status: 200,
-            message: 'Delete movie successfully'
-          })
-        } else {
-          next({
-            status: 404,
-            name: 'NOT_FOUND',
-            message: 'Movie is not found'
-          })
-        }
-      })
-      .catch(err => {
-        next(err)
-      })
+    const id = req.params.id
+    try {
+      Movie.findOne(movieCollection, id)
+        .then(async response => {
+          if (response.delete_hash) {
+            await axios({
+              method: 'DELETE',
+              url: 'https://api.imgur.com/3/image/' + response.delete_hash,
+              headers: {
+                'Authorization': 'Client-ID 0e81df2dc44ab43',
+                'Content-Type': 'application/json'
+              }
+            })
+          }
+          Movie.deleteMovie(movieCollection, id)
+            .then(response => {
+              const deletedCount = response.deletedCount
+              if (deletedCount) {
+                res.status(200).json({
+                  status: 200,
+                  message: 'Delete movie successfully'
+                })
+              } else {
+                next({
+                  status: 404,
+                  name: 'NOT_FOUND',
+                  message: 'Movie is not found'
+                })
+              }
+            })
+            .catch(err => {
+              next(err)
+            })
+        })
+        .catch(err => {
+          next(err)
+        })
+    } catch (error) {
+      next(error)
+    }
   }
 
   static findOne (req, res, next) {

@@ -11,8 +11,8 @@ const typeDef = gql`
   }
 
   type Response {
-    status: Int!
-    message: String!
+    status: Int
+    message: String
   }
 
   extend type Query {

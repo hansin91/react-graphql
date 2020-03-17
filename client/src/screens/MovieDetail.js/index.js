@@ -42,6 +42,7 @@ function MovieDetail ({ route, navigation }) {
           type={type}
           closeModalDelete={closeModalDelete}
           object={data.getMovie}
+          navigation={navigation}
           isVisible={isOpenDeleteModal} />
         <EditItem
           type={type}

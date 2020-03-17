@@ -1,7 +1,44 @@
-import React from 'react'
-import { Modal, View, Text, Dimensions, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useEffect } from 'react'
+import {
+  Modal,
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator
+} from 'react-native'
+import { useMutation } from '@apollo/react-hooks'
+import { DELETE_MOVIE } from '../apollo/Mutation'
+import { FETCH_MOVIES } from '../apollo/Query'
 
-function DeleteItem ({ isVisible, closeModalDelete }) {
+function DeleteItem ({ isVisible, object, closeModalDelete, navigation }) {
+  const [deleteMovie, { loading, error, data: response }] = useMutation(DELETE_MOVIE, {
+    update (cache, { data: { deleteMovie } }) {
+      const { getMovies } = cache.readQuery({ query: FETCH_MOVIES })
+      const newMovies = [...getMovies].filter((movie) => movie._id !== object._id)
+      cache.writeQuery({
+        query: FETCH_MOVIES,
+        data: { getMovies: newMovies }
+      })
+    }
+  })
+
+  const submit = () => {
+    deleteMovie({
+      variables: {
+        id: object._id
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (response) {
+      closeModalDelete()
+      navigation.navigate('Movies')
+    }
+  }, [response])
+
   return (
     <Modal
       animationType="slide"
@@ -45,7 +82,7 @@ function DeleteItem ({ isVisible, closeModalDelete }) {
               fontWeight: 'bold',
               paddingBottom: 20
             }}>Are you sure want to delete this movie ?</Text>
-            <View style={{
+            {!loading && <View style={{
               flexDirection: 'row',
               justifyContent: 'flex-end',
               paddingBottom: 20
@@ -53,10 +90,17 @@ function DeleteItem ({ isVisible, closeModalDelete }) {
               <TouchableOpacity onPress={() => closeModalDelete()}>
                 <Text style={[styles.btnModal, styles.btnModalClose]}>Close</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => submit()}>
                 <Text style={[styles.btnModal, styles.btnModalSubmit]}>Delete</Text>
               </TouchableOpacity>
-            </View>
+            </View>}
+            {loading && <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingBottom: 20
+            }}>
+              <ActivityIndicator />
+            </View>}
           </View>
         </View>
       </View>

@@ -58,6 +58,7 @@ export const deleteMovie = async (_, { id }) => {
       method: 'DELETE',
       url: '/' + id
     })
+    await redis.del('movies')
     return data
   } catch (error) {
     return error.response
