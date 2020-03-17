@@ -1,11 +1,11 @@
 import React from 'react'
 import { Tile } from 'react-native-elements'
 import { View } from 'react-native'
-function Item (props) {
+function Item ({ data }) {
   return (
     <View>
       <Tile
-        imageSrc={{ uri: props.data.poster_path }}
+        imageSrc={{ uri: data.poster_path }}
         featured
         containerStyle={{ margin: 10 }}
         width={200}

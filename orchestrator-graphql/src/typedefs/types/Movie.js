@@ -17,7 +17,14 @@ const typeDef = gql`
 
   extend type Mutation {
     addMovie(input: createMovieInput!): Movie!
-    updateMovie(input: updateMovieInput!): Movie!
+    updateMovie(input: createMovieInput!): Movie!
+    updateMovieImage(input: updateMovieImage!): Movie!
+  }
+
+  input updateMovieImage {
+    id: ID!
+    poster_path: String!
+    delete_hash: String!
   }
 
   input updateMovieInput {

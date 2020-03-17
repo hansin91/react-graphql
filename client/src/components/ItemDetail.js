@@ -1,8 +1,18 @@
 import React from 'react'
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import { Image, Icon, Button } from 'react-native-elements'
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native'
+import { Image, Icon } from 'react-native-elements'
+function ItemDetail ({ data, type, openModal }) {
 
-function ItemDetail ({ data, type }) {
+  const openModalEdit = () => {
+    openModal()
+  }
+
   return (
     <View style={{ marginTop: 0 }}>
       <View style={[styles.padding]}>
@@ -16,13 +26,46 @@ function ItemDetail ({ data, type }) {
           flexDirection: 'row',
           paddingBottom: 5
         }}>
-          <Icon
-            name='star'
-            size={30}
-            color='#f0c14b' />
-          <Text style={{ color: '#fff', fontSize: 20, paddingLeft: 5 }}>
-            {data.popularity}
-          </Text>
+          <View style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            flex: 1,
+          }}>
+            <View style={{
+              flexDirection: 'row',
+              flex: 1,
+              alignItems: 'center'
+            }}>
+              <Icon
+                name='star'
+                size={30}
+                color='#f0c14b' />
+              <Text style={{
+                alignSelf: 'center',
+                color: '#fff',
+                fontSize: 20,
+                paddingLeft: 5
+              }}>
+                {data.popularity}
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={openModalEdit}>
+                <Icon
+                  color='#2089dc'
+                  name='edit'
+                  reverse
+                  size={20} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon
+                  color='#E50914'
+                  name='delete'
+                  reverse
+                  size={20} />
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
         <Text style={{
           fontSize: 15,

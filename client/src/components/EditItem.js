@@ -15,63 +15,68 @@ import { Input, Image } from 'react-native-elements'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
-import { ADD_MOVIE } from '../apollo/Mutation'
+import { UPDATE_MOVIE_IMAGE } from '../apollo/Mutation'
 import { FETCH_MOVIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
-import { uploadImage, setImageFile, setIsAddedMovie } from '../redux/actions'
+import { uploadImage, setImageFile, updatePoster, setUpdatedPoster, setIsAddedMovie, setUpdatedImage } from '../redux/actions'
 
-function AddItem ({ object, isVisible, closeModal, type, action }) {
+function EditItem ({ object, isVisible, closeModal, type, action }) {
   const dispatch = useDispatch()
   const isLoadingUploadImage = useSelector(state => state.movie.isLoadingUploadImage)
-  const imageFile = useSelector(state => state.movie.imageFile)
-  const isAddedMovie = useSelector(state => state.movie.isAddedMovie)
+  const isUpdatedPoster = useSelector(state => state.movie.isUpdatedPoster)
+  const updatedImageFile = useSelector(state => state.movie.updatedImageFile)
   const [tags, handelInputTags] = useInputState('')
   const [filePath, setFilePath] = useState('')
   const [title, handleInputTitle] = useInputState('')
   const [overview, handleInputOverview] = useInputState('')
   const [popularity, handleInputPopularity] = useInputState('')
-  const [addMovie,
-    { loading,
-      error, data }] = useMutation(
-        ADD_MOVIE,
+  const [updateMovieImage,
+    { loading: updateMovieImageLoading,
+      error: updateMovieImageError, data: updatedMovie }] = useMutation(
+        UPDATE_MOVIE_IMAGE,
         {
-          update (cache, { data: { addMovie } }) {
+          update (cache, { data: { updateMovieImage } }) {
             const { getMovies } = cache.readQuery({ query: FETCH_MOVIES })
+            const newMovies = getMovies.map(movie => {
+              if (movie._id === updateMovieImage._id) {
+                return {
+                  ...movie,
+                  poster_path: updateMovieImage.poster_path,
+                  delete_hash: updateMovieImage.delete_hash
+                }
+              } else {
+                return movie
+              }
+            })
             cache.writeQuery({
               query: FETCH_MOVIES,
-              data: { getMovies: getMovies.concat([addMovie]) }
+              data: { getMovies: newMovies }
             })
           }
         }
       )
 
-  useEffect(() => {
-    if (imageFile) {
-      if (action === 'add') {
-        console.log('===== action ===')
-        const newItem = {
-          title,
-          popularity: +popularity,
-          overview,
-          tags: tags.toLowerCase().trim().split(','),
-          poster_path: imageFile.link,
-          delete_hash: imageFile.deletehash
-        }
-        if (type === 'movie') {
-          addMovie({ variables: { input: newItem } })
-        }
-        dispatch(setImageFile(''))
-      }
-    }
-  }, [imageFile])
 
   useEffect(() => {
-    if (isAddedMovie) {
-      closeModalAdd()
-      setFilePath('')
-      dispatch(setIsAddedMovie(false))
+    console.log(updatedImageFile, '====== updated image file===')
+    if (updatedImageFile) {
+      updateMovieImage({
+        variables: {
+          id: object._id,
+          poster_path: updatedImageFile.link,
+          delete_hash: updatedImageFile.deletehash
+        }
+      })
+      // dispatch(setUpdatedImage(''))
     }
-  }, [isAddedMovie])
+  }, [updatedImageFile])
+
+  useEffect(() => {
+    if (isUpdatedPoster) {
+      console.log(imageFile, '==== image file ===== modal edit')
+      dispatch(setUpdatedPoster(false))
+    }
+  }, [isUpdatedPoster])
 
   const closeModalAdd = () => {
     closeModal()
@@ -119,6 +124,17 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
         alert(response.customButton)
       } else {
         setFilePath(response)
+        console.log(action)
+        console.log(object)
+        dispatch(updatePoster(response, object.delete_hash))
+        // if (action === 'edit') {
+        //
+        //   if (object.delete_hash) {
+        //     // dispatch(updatePoster(filePath, object.delete_hash))
+        //   } else {
+        //     // dispatch(uploadImage(response, 'edit'))
+        //   }
+        // }
       }
     })
   }
@@ -308,4 +324,4 @@ const styles = StyleSheet.create({
     borderColor: '#E50914'
   }
 })
-export default AddItem
+export default EditItem

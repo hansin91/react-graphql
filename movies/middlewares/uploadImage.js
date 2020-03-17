@@ -5,17 +5,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb)
   }
-}).single('poster')
-
-// const Storage = multer.diskStorage({
-//   destination (req, file, callback) {
-//     callback(null, './images')
-//   },
-//   filename (req, file, callback) {
-//     callback(null, `${file.fieldname}_${Date.now()}_${file.originalname}`)
-//   },
-// })
-// const upload = multer({ storage: Storage }).single('poster')
+}).single('poster_path')
 
 const checkFileType = (file, cb) => {
   // Allowed ext

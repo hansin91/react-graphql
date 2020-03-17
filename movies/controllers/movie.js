@@ -39,6 +39,38 @@ class MovieController {
       })
   }
 
+  static updateMovieImage (req, res, next) {
+    const db = req.db
+    const movieCollection = db.collection('movies')
+    const { poster_path, delete_hash } = req.body
+    const { id } = req.params
+    const params = {
+      poster_path,
+      delete_hash
+    }
+    console.log(req.body)
+    Movie.updateMovie(movieCollection, params)
+      .then(response => {
+        const { n } = response.result
+        if (n) {
+          res.status(200).json({
+            status: 200,
+            message: 'Update movie with id ' + id + ' successfully'
+          })
+        } else {
+          next({
+            status: 404,
+            name: 'NOT_FOUND',
+            message: 'Movie is not found'
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        next(err)
+      })
+  }
+
   static updateMovie (req, res, next) {
     const db = req.db
     const movieCollection = db.collection('movies')

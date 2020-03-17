@@ -23,6 +23,7 @@ export const FETCH_MOVIE = gql`
       poster_path
       popularity
       tags
+      delete_hash
     }
   }
 `

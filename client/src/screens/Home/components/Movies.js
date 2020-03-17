@@ -2,11 +2,11 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQuery } from '@apollo/react-hooks'
 import { Button } from 'react-native-elements'
+import { View, Text } from 'react-native'
 import ItemList from './ItemList'
 import { FETCH_MOVIES } from '../../../apollo/Query'
 import { setLoadingMovies, setErrorMovies, setMovies } from '../../../redux/actions'
 import CircularLoading from '../../../components/CircularLoading'
-import { View } from 'react-native'
 
 function Movies ({ navigation }) {
   const dispatch = useDispatch()
@@ -25,7 +25,12 @@ function Movies ({ navigation }) {
   const movies = useSelector((state) => state.movie.movies)
 
   if (loading) return <CircularLoading />
-  if (movies && movies.length > 0) return (
+  if (!loading && error) return (
+    <View>
+      <Text>{error}</Text>
+    </View>
+  )
+  return (
     <View>
       <ItemList title="Movies" data={movies.slice(0, 5)} />
       <Button

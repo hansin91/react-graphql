@@ -23,19 +23,18 @@ export const getMovies = async () => {
 export const getMovie = async (_, { id }) => {
   try {
     let movies = await redis.get('movies')
-    movies = JSON.parse(movies)
-    let [movie] = movies.filter((movie) => movie._id === id)
-    if (movie) {
-      return movie
+    if (movies) {
+      movies = JSON.parse(movies)
+      let [movie] = movies.filter((movie) => movie._id === id)
+      if (movie) {
+        return movie
+      }
     }
     const { data } = await movieAPI({
       method: 'GET',
-      params: {
-        id
-      }
+      url: '/' + id
     })
-    movie = data.movie
-    return movie
+    return data.movie
   } catch (error) {
     return error
   }
