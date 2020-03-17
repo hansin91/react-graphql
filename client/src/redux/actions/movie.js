@@ -6,6 +6,7 @@ import {
   SET_IMAGE_FILE,
   SET_UPDATED_POSTER,
   SET_IS_ADDED_MOVIE,
+  SET_UPDATED_IMAGE
 } from './type'
 
 import imgurAPI from '../../api/imgurAPI'

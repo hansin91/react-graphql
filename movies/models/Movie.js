@@ -25,6 +25,15 @@ class Movie {
       })
   }
 
+  static updateMovieImage (collection, params) {
+    const { id, poster_path, delete_hash } = params
+    return collection.updateOne({ _id: ObjectID(id) },
+      {
+        $set:
+          { poster_path, delete_hash }
+      })
+  }
+
   static deleteMovie (collection, id) {
     return collection.deleteOne({ _id: ObjectID(id) })
   }

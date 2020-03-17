@@ -48,7 +48,6 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
   useEffect(() => {
     if (imageFile) {
       if (action === 'add') {
-        console.log('===== action ===')
         const newItem = {
           title,
           popularity: +popularity,

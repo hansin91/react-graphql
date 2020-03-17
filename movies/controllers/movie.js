@@ -45,11 +45,11 @@ class MovieController {
     const { poster_path, delete_hash } = req.body
     const { id } = req.params
     const params = {
+      id,
       poster_path,
       delete_hash
     }
-    console.log(req.body)
-    Movie.updateMovie(movieCollection, params)
+    Movie.updateMovieImage(movieCollection, params)
       .then(response => {
         const { n } = response.result
         if (n) {

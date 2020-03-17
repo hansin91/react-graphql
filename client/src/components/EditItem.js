@@ -58,13 +58,14 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
 
 
   useEffect(() => {
-    console.log(updatedImageFile, '====== updated image file===')
     if (updatedImageFile) {
       updateMovieImage({
         variables: {
-          id: object._id,
-          poster_path: updatedImageFile.link,
-          delete_hash: updatedImageFile.deletehash
+          input: {
+            id: object._id,
+            poster_path: updatedImageFile.link,
+            delete_hash: updatedImageFile.deletehash
+          }
         }
       })
       // dispatch(setUpdatedImage(''))
@@ -73,7 +74,7 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
 
   useEffect(() => {
     if (isUpdatedPoster) {
-      console.log(imageFile, '==== image file ===== modal edit')
+      // console.log(updatedImageFile, '==== image file ===== modal edit')
       dispatch(setUpdatedPoster(false))
     }
   }, [isUpdatedPoster])
@@ -127,14 +128,6 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
         console.log(action)
         console.log(object)
         dispatch(updatePoster(response, object.delete_hash))
-        // if (action === 'edit') {
-        //
-        //   if (object.delete_hash) {
-        //     // dispatch(updatePoster(filePath, object.delete_hash))
-        //   } else {
-        //     // dispatch(uploadImage(response, 'edit'))
-        //   }
-        // }
       }
     })
   }

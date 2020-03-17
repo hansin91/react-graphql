@@ -1,8 +1,9 @@
-import { addMovie, updateMovie } from './movie'
+import { addMovie, updateMovie, updateMovieImage } from './movie'
 
 const Mutation = {
   addMovie,
-  updateMovie
+  updateMovie,
+  updateMovieImage
 }
 
 export default Mutation
