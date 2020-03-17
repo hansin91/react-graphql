@@ -15,24 +15,50 @@ import { Input, Image } from 'react-native-elements'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
-import { UPDATE_MOVIE_IMAGE } from '../apollo/Mutation'
+import { UPDATE_MOVIE_IMAGE, UPDATE_MOVIE } from '../apollo/Mutation'
 import { FETCH_MOVIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
-import { uploadImage, setImageFile, updatePoster, setUpdatedPoster, setIsAddedMovie, setUpdatedImage } from '../redux/actions'
+import { updatePoster } from '../redux/actions'
 
 function EditItem ({ object, isVisible, closeModal, type, action }) {
   const dispatch = useDispatch()
   const isLoadingUploadImage = useSelector(state => state.movie.isLoadingUploadImage)
-  const isUpdatedPoster = useSelector(state => state.movie.isUpdatedPoster)
   const updatedImageFile = useSelector(state => state.movie.updatedImageFile)
   const [tags, handelInputTags] = useInputState('')
   const [filePath, setFilePath] = useState('')
   const [title, handleInputTitle] = useInputState('')
   const [overview, handleInputOverview] = useInputState('')
   const [popularity, handleInputPopularity] = useInputState('')
+  const [updateMovie,
+    { loading: updateMovieLoading,
+      error: updateMovieError, data: updatedMovie }] = useMutation(
+        UPDATE_MOVIE,
+        {
+          update (cache, { data: { updateMovie } }) {
+            const { getMovies } = cache.readQuery({ query: FETCH_MOVIES })
+            const newMovies = getMovies.map(movie => {
+              if (movie._id === updateMovie._id) {
+                return {
+                  ...movie,
+                  title: updateMovie.title,
+                  overview: updateMovie.overview,
+                  popularity: updateMovie.popularity,
+                  tags: updateMovie.tags
+                }
+              } else {
+                return movie
+              }
+            })
+            cache.writeQuery({
+              query: FETCH_MOVIES,
+              data: { getMovies: newMovies }
+            })
+          }
+        }
+      )
   const [updateMovieImage,
     { loading: updateMovieImageLoading,
-      error: updateMovieImageError, data: updatedMovie }] = useMutation(
+      error: updateMovieImageError, data: updatedMovieImage }] = useMutation(
         UPDATE_MOVIE_IMAGE,
         {
           update (cache, { data: { updateMovieImage } }) {
@@ -56,7 +82,6 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
         }
       )
 
-
   useEffect(() => {
     if (updatedImageFile) {
       updateMovieImage({
@@ -68,16 +93,14 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
           }
         }
       })
-      // dispatch(setUpdatedImage(''))
     }
   }, [updatedImageFile])
 
   useEffect(() => {
-    if (isUpdatedPoster) {
-      // console.log(updatedImageFile, '==== image file ===== modal edit')
-      dispatch(setUpdatedPoster(false))
+    if (updateMovieLoading) {
+      closeModal()
     }
-  }, [isUpdatedPoster])
+  }, [updateMovieLoading])
 
   const closeModalAdd = () => {
     closeModal()
@@ -125,15 +148,23 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
         alert(response.customButton)
       } else {
         setFilePath(response)
-        console.log(action)
-        console.log(object)
         dispatch(updatePoster(response, object.delete_hash))
       }
     })
   }
 
   const saveItem = () => {
-    dispatch(uploadImage(filePath, 'add'))
+    updateMovie({
+      variables: {
+        input: {
+          id: object._id,
+          title,
+          overview,
+          popularity: +popularity,
+          tags: tags.toLowerCase().trim().split(',')
+        }
+      }
+    })
   }
 
   return (

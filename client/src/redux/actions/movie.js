@@ -107,7 +107,6 @@ export const updatePoster = (file, deleteHash) => dispatch => {
           }
         })
           .then(({ data }) => {
-            console.log('delete hash not null ===== ')
             dispatch(setUpdatedImage(data))
             dispatch(setUpdatedPoster(true))
           })
@@ -118,7 +117,6 @@ export const updatePoster = (file, deleteHash) => dispatch => {
           .finally(() => dispatch(setLoadingUploadImage(false)))
       })
       .catch(err => {
-        console.log(err.response.data, '=== err ')
         dispatch(setErrorMovies(err.response))
         dispatch(setLoadingUploadImage(false))
         dispatch(setUpdatedPoster(false))
@@ -132,7 +130,6 @@ export const updatePoster = (file, deleteHash) => dispatch => {
       }
     })
       .then(({ data }) => {
-        console.log('delete hash null ===== ')
         dispatch(setUpdatedImage(data))
         dispatch(setUpdatedPoster(true))
       })

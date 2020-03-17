@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native'
 import { Image, Icon } from 'react-native-elements'
-function ItemDetail ({ data, type, openModal }) {
+function ItemDetail ({ openModalDelete, data, type, openModal }) {
 
   const openModalEdit = () => {
     openModal()
@@ -57,7 +57,7 @@ function ItemDetail ({ data, type, openModal }) {
                   reverse
                   size={20} />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => openModalDelete()}>
                 <Icon
                   color='#E50914'
                   name='delete'

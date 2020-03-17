@@ -74,13 +74,12 @@ class MovieController {
   static updateMovie (req, res, next) {
     const db = req.db
     const movieCollection = db.collection('movies')
-    const { title, overview, poster_path, popularity, tags } = req.body
+    const { title, overview, popularity, tags } = req.body
     const { id } = req.params
     const params = {
       id,
       title,
       overview,
-      poster_path,
       popularity,
       tags
     }

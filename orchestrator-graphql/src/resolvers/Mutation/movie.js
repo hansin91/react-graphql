@@ -51,3 +51,15 @@ export const updateMovieImage = async (_, { input }) => {
     return error.response
   }
 }
+
+export const deleteMovie = async (_, { id }) => {
+  try {
+    const { data } = await movieAPI({
+      method: 'DELETE',
+      url: '/' + id
+    })
+    return data
+  } catch (error) {
+    return error.response
+  }
+}

@@ -10,6 +10,11 @@ const typeDef = gql`
     delete_hash: String
   }
 
+  type Response {
+    status: Int!
+    message: String!
+  }
+
   extend type Query {
     getMovies: [Movie]!
     getMovie(id: ID!): Movie!
@@ -17,8 +22,9 @@ const typeDef = gql`
 
   extend type Mutation {
     addMovie(input: createMovieInput!): Movie!
-    updateMovie(input: createMovieInput!): Movie!
+    updateMovie(input: updateMovieInput!): Movie!
     updateMovieImage(input: updateMovieImage!): Movie!
+    deleteMovie(id: ID!): Response!
   }
 
   input updateMovieImage {
@@ -31,7 +37,6 @@ const typeDef = gql`
     id: ID!
     title: String!
     overview: String!
-    poster_path: String!
     popularity: Float!
     tags: [String!]!
   }
