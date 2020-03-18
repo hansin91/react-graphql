@@ -20,7 +20,7 @@ import { FETCH_MOVIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
 import { updatePoster, setUpdatedPoster } from '../redux/actions'
 
-function EditItem ({ object, isVisible, closeModal, type, action }) {
+function EditItem ({ object, isVisible, closeModal, type }) {
   const dispatch = useDispatch()
   const isLoadingUploadImage = useSelector(state => state.movie.isLoadingUploadImage)
   const updatedImageFile = useSelector(state => state.movie.updatedImageFile)
@@ -63,19 +63,21 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
   useEffect(() => {
     if (isUpdatedPoster) {
       if (updatedImageFile) {
-        updateMovie({
-          variables: {
-            input: {
-              id: object._id,
-              title,
-              overview,
-              popularity: +popularity,
-              tags: tags.toLowerCase().trim().split(','),
-              poster_path: updatedImageFile.link,
-              delete_hash: updatedImageFile.deletehash
+        if (type === 'movie') {
+          updateMovie({
+            variables: {
+              input: {
+                id: object._id,
+                title,
+                overview,
+                popularity: +popularity,
+                tags: tags.toLowerCase().trim().split(','),
+                poster_path: updatedImageFile.link,
+                delete_hash: updatedImageFile.deletehash
+              }
             }
-          }
-        })
+          })
+        }
       }
       dispatch(setUpdatedPoster(false))
     }
@@ -189,8 +191,7 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
               borderTopRightRadius: 10,
               color: '#fff',
               fontWeight: 'bold'
-            }}>{type === 'movie' && action === 'add' ? 'Add movie' : ''}
-              {type === 'movie' && action === 'edit' ? 'Edit movie' : ''}
+            }}>{type === 'movie' ? 'Edit Movie' : 'Edit TV Serie'}
             </Text>
           </View>
           <View style={{ backgroundColor: '#fff' }}>

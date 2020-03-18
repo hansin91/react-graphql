@@ -3,13 +3,13 @@ import { TouchableOpacity, Text } from 'react-native'
 import { Container, View } from 'native-base'
 import { Icon } from 'react-native-elements'
 import { useQuery } from '@apollo/react-hooks'
-import { FETCH_MOVIES } from '../../apollo/Query'
+import { FETCH_TV_SERIES } from '../../apollo/Query'
 import ItemList from '../../components/ItemList'
 import AddItem from '../../components/AddItem'
-import Alert from '../../components/Alert'
 import CircularLoading from '../../components/CircularLoading'
+import Alert from '../../components/Alert'
 
-function MovieScreen ({ navigation }) {
+function TVSerieScreen ({ navigation }) {
   const openModal = () => {
     setIsOpen(true)
   }
@@ -17,7 +17,7 @@ function MovieScreen ({ navigation }) {
     setIsOpen(false)
   }
   const [isOpen, setIsOpen] = useState(false)
-  const { loading, error, data } = useQuery(FETCH_MOVIES)
+  const { loading, error, data } = useQuery(FETCH_TV_SERIES)
 
   if (loading) return (
     <CircularLoading />
@@ -32,7 +32,7 @@ function MovieScreen ({ navigation }) {
       <Container style={{ padding: 15, backgroundColor: '#141414' }}>
         <AddItem
           isVisible={isOpen}
-          type="movie"
+          type="tvserie"
           action="add"
           closeModal={closeModal} />
         <TouchableOpacity style={{ marginBottom: 10 }} onPress={openModal}>
@@ -42,9 +42,9 @@ function MovieScreen ({ navigation }) {
             reverse
             size={20} />
         </TouchableOpacity>
-        <ItemList type="movie" navigation={navigation} data={data.getMovies} />
+        <ItemList type="tvserie" navigation={navigation} data={data.getTVSeries} />
       </Container>
     )
 }
 
-export default MovieScreen
+export default TVSerieScreen

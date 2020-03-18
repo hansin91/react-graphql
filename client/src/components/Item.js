@@ -3,7 +3,6 @@ import { View, ActivityIndicator, Text, TouchableOpacity } from 'react-native'
 import { Image, Icon } from 'react-native-elements'
 
 function Item ({ data, type, navigation }) {
-
   const goToDetail = () => {
     navigation.navigate('Detail', {
       id: data._id,

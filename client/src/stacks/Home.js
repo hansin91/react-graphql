@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import HeaderScreen from '../components/Header'
 import HomeScreen from '../screens/Home'
 import Movie from '../stacks/Movie'
+import TVSerie from '../stacks/TVserie'
 const Stack = createStackNavigator()
 function Home ({ navigation }) {
   return (
@@ -29,6 +30,14 @@ function Home ({ navigation }) {
           header: props => <HeaderScreen
             navigation={navigation}
             title="Movies" {...props} />
+        }}
+      ></Stack.Screen>
+      <Stack.Screen name="TV Series"
+        component={TVSerie}
+        options={{
+          header: props => <HeaderScreen
+            navigation={navigation}
+            title="TV Series" {...props} />
         }}
       ></Stack.Screen>
     </Stack.Navigator>

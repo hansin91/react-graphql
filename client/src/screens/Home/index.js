@@ -11,7 +11,7 @@ function Home ({ navigation }) {
       <ScrollView style={{ marginTop: 0 }}>
         <ImageSlider />
         <Movies navigation={navigation} />
-        <TVSeries />
+        <TVSeries navigation={navigation} />
       </ScrollView>
     </Container>
   )

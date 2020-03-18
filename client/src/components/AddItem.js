@@ -155,8 +155,7 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
               borderTopRightRadius: 10,
               color: '#fff',
               fontWeight: 'bold'
-            }}>{type === 'movie' && action === 'add' ? 'Add movie' : ''}
-              {type === 'movie' && action === 'edit' ? 'Edit movie' : ''}
+            }}>{type === 'movie' ? 'Add Movie' : 'Add TV Serie'}
             </Text>
           </View>
           <View style={{ backgroundColor: '#fff' }}>
