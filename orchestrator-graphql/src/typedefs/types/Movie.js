@@ -26,12 +26,6 @@ const typeDef = gql`
     deleteMovie(id: ID!): Response!
   }
 
-  input updateMovieImage {
-    id: ID!
-    poster_path: String!
-    delete_hash: String!
-  }
-
   input updateMovieInput {
     id: ID!
     title: String!
