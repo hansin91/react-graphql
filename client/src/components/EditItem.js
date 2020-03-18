@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import ImagePicker from 'react-native-image-picker'
 import {
-  Modal,
   View,
   Text,
   StyleSheet,
   StatusBar,
-  Dimensions,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView,
+  Modal,
+  Dimensions
 } from 'react-native'
 import { Form } from 'native-base'
 import { Input, Image } from 'react-native-elements'
@@ -18,7 +19,7 @@ import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_MOVIE, UPDATE_TV_SERIE } from '../apollo/Mutation'
 import { FETCH_MOVIES, FETCH_TV_SERIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
-import { updatePoster, setUpdatedPoster, editMovie, editTVSerie, setIsEditTVSerie, setImageFile, setIsEditMovie } from '../redux/actions'
+import { editMovie, editTVSerie, setIsEditTVSerie, setImageFile, setIsEditMovie } from '../redux/actions'
 
 function EditItem ({ object, isVisible, closeModal, type }) {
   const dispatch = useDispatch()
@@ -26,8 +27,6 @@ function EditItem ({ object, isVisible, closeModal, type }) {
   const imageFile = useSelector(state => state.common.imageFile)
   const isEditTVSerie = useSelector(state => state.tvSerie.isEditTVSerie)
   const isEditMovie = useSelector(state => state.movie.isEditMovie)
-  const updatedImageFile = useSelector(state => state.movie.updatedImageFile)
-  const isUpdatedPoster = useSelector(state => state.movie.isUpdatedPoster)
   const [tags, handelInputTags] = useInputState('')
   const [filePath, setFilePath] = useState(null)
   const [title, handleInputTitle] = useInputState('')
@@ -154,29 +153,6 @@ function EditItem ({ object, isVisible, closeModal, type }) {
   }, [isEditTVSerie])
 
   useEffect(() => {
-    if (isUpdatedPoster) {
-      if (updatedImageFile) {
-        if (type === 'movie') {
-          updateMovie({
-            variables: {
-              input: {
-                id: object._id,
-                title,
-                overview,
-                popularity: +popularity,
-                tags: tags.toLowerCase().trim().split(','),
-                poster_path: updatedImageFile.link,
-                delete_hash: updatedImageFile.deletehash
-              }
-            }
-          })
-        }
-      }
-      dispatch(setUpdatedPoster(false))
-    }
-  }, [isUpdatedPoster])
-
-  useEffect(() => {
     if (updatedMovie) {
       setFilePath(null)
       closeModal()
@@ -248,7 +224,7 @@ function EditItem ({ object, isVisible, closeModal, type }) {
               popularity: +popularity,
               tags: tags.toLowerCase().trim().split(','),
               poster_path: object.poster_path,
-              delete_hash: object.delete_hash
+              delete_hash: object.delete_hash ? object.delete_hash : ''
             }
           }
         })
@@ -268,7 +244,7 @@ function EditItem ({ object, isVisible, closeModal, type }) {
               popularity: +popularity,
               tags: tags.toLowerCase().trim().split(','),
               poster_path: object.poster_path,
-              delete_hash: object.delete_hash
+              delete_hash: object.delete_hash ? object.delete_hash : ''
             }
           }
         })
@@ -292,8 +268,8 @@ function EditItem ({ object, isVisible, closeModal, type }) {
         width: '100%',
         height: '100%',
       }}>
-        <View style={{
-          top: '5%',
+        <ScrollView style={{
+          top: '2%',
           position: 'relative',
           left: (5 * (Dimensions.get('screen').width) / 100),
           width: '90%'
@@ -390,7 +366,7 @@ function EditItem ({ object, isVisible, closeModal, type }) {
                 </View>}
             </Form>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   )

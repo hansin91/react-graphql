@@ -19,11 +19,7 @@ import { ADD_MOVIE, ADD_TV_SERIE } from '../apollo/Mutation'
 import { FETCH_MOVIES, FETCH_TV_SERIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
 import {
-  uploadImage,
-  setIsCreatedFile,
-  setCreatedFile,
   setImageFile,
-  setIsCreatedFileTVSerie,
   addNewTVSerie,
   setIsAddTVSerie,
   addNewMovie,
@@ -205,7 +201,7 @@ function AddItem ({ object, isVisible, closeModal, type }) {
         height: '100%',
       }}>
         <View style={{
-          top: '5%',
+          top: '2%',
           position: 'relative',
           left: (5 * (Dimensions.get('screen').width) / 100),
           width: '90%'
