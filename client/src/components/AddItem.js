@@ -18,13 +18,13 @@ import { useMutation } from '@apollo/react-hooks'
 import { ADD_MOVIE } from '../apollo/Mutation'
 import { FETCH_MOVIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
-import { uploadImage, setImageFile, setIsAddedMovie } from '../redux/actions'
+import { uploadImage, setIsCreatedFile } from '../redux/actions'
 
 function AddItem ({ object, isVisible, closeModal, type, action }) {
   const dispatch = useDispatch()
   const isLoadingUploadImage = useSelector(state => state.movie.isLoadingUploadImage)
-  const imageFile = useSelector(state => state.movie.imageFile)
-  const isAddedMovie = useSelector(state => state.movie.isAddedMovie)
+  const createdImageFile = useSelector(state => state.movie.createdImageFile)
+  const isCreatedImageFile = useSelector(state => state.movie.isCreatedImageFile)
   const [tags, handelInputTags] = useInputState('')
   const [filePath, setFilePath] = useState('')
   const [title, handleInputTitle] = useInputState('')
@@ -32,7 +32,7 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
   const [popularity, handleInputPopularity] = useInputState('')
   const [addMovie,
     { loading,
-      error, data }] = useMutation(
+      error, data: newMovie }] = useMutation(
         ADD_MOVIE,
         {
           update (cache, { data: { addMovie } }) {
@@ -46,31 +46,30 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
       )
 
   useEffect(() => {
-    if (imageFile) {
-      if (action === 'add') {
+    if (newMovie) {
+      setFilePath('')
+      closeModal()
+    }
+  }, [newMovie])
+
+  useEffect(() => {
+    if (isCreatedImageFile) {
+      if (createdImageFile) {
         const newItem = {
           title,
           popularity: +popularity,
           overview,
           tags: tags.toLowerCase().trim().split(','),
-          poster_path: imageFile.link,
-          delete_hash: imageFile.deletehash
+          poster_path: createdImageFile.link,
+          delete_hash: createdImageFile.deletehash
         }
         if (type === 'movie') {
           addMovie({ variables: { input: newItem } })
         }
-        dispatch(setImageFile(''))
       }
+      dispatch(setIsCreatedFile(false))
     }
-  }, [imageFile])
-
-  useEffect(() => {
-    if (isAddedMovie) {
-      closeModalAdd()
-      setFilePath('')
-      dispatch(setIsAddedMovie(false))
-    }
-  }, [isAddedMovie])
+  }, [isCreatedImageFile])
 
   const closeModalAdd = () => {
     closeModal()

@@ -3,10 +3,10 @@ import {
   SET_LOADING_UPLOAD_IMAGE,
   SET_MOVIES,
   SET_ERROR_MOVIES,
-  SET_IMAGE_FILE,
   SET_UPDATED_POSTER,
-  SET_IS_ADDED_MOVIE,
-  SET_UPDATED_IMAGE
+  SET_UPDATED_IMAGE,
+  SET_IS_CREATED_FILE,
+  SET_CREATED_FILE
 } from './type'
 
 import imgurAPI from '../../api/imgurAPI'
@@ -31,8 +31,8 @@ const setLoadingUploadImage = (value) => ({
   payload: value
 })
 
-export const setImageFile = (value) => ({
-  type: SET_IMAGE_FILE,
+export const setCreatedFile = (value) => ({
+  type: SET_CREATED_FILE,
   payload: value
 })
 
@@ -41,19 +41,14 @@ export const setUpdatedPoster = (value) => ({
   payload: value
 })
 
-export const setIsAddedMovie = (value) => ({
-  type: SET_IS_ADDED_MOVIE,
+export const setIsCreatedFile = (value) => ({
+  type: SET_IS_CREATED_FILE,
   payload: value
 })
 
 export const uploadImage = (file, action) => (dispatch) => {
   dispatch(setLoadingUploadImage(true))
-  if (action === 'edit') {
-    dispatch(setUpdatedPoster(false))
-  }
-  if (action === 'add') {
-    dispatch(setIsAddedMovie(false))
-  }
+  dispatch(setIsCreatedFile(false))
   imgurAPI({
     method: 'POST',
     data: {
@@ -62,22 +57,12 @@ export const uploadImage = (file, action) => (dispatch) => {
     }
   })
     .then(response => {
-      dispatch(setImageFile(response.data))
-      if (action === 'edit') {
-        dispatch(setUpdatedPoster(true))
-      }
-      if (action === 'add') {
-        dispatch(setIsAddedMovie(true))
-      }
+      dispatch(setCreatedFile(response.data))
+      dispatch(setIsCreatedFile(true))
     })
     .catch(err => {
       dispatch(setErrorMovies(err.response))
-      if (action === 'edit') {
-        dispatch(setUpdatedPoster(false))
-      }
-      if (action === 'add') {
-        dispatch(setIsAddedMovie(false))
-      }
+      dispatch(setIsCreatedFile(false))
     })
     .finally(() => {
       dispatch(setLoadingUploadImage(false))
