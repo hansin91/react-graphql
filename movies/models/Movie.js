@@ -17,20 +17,11 @@ class Movie {
   }
 
   static updateMovie (collection, params) {
-    const { id, title, overview, popularity, tags } = params
+    const { id, title, overview, popularity, tags, poster_path, delete_hash } = params
     return collection.updateOne({ _id: ObjectID(id) },
       {
         $set:
-          { title, overview, popularity, tags }
-      })
-  }
-
-  static updateMovieImage (collection, params) {
-    const { id, poster_path, delete_hash } = params
-    return collection.updateOne({ _id: ObjectID(id) },
-      {
-        $set:
-          { poster_path, delete_hash }
+          { title, overview, popularity, tags, poster_path, delete_hash }
       })
   }
 

@@ -15,17 +15,18 @@ import { Input, Image } from 'react-native-elements'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
-import { UPDATE_MOVIE_IMAGE, UPDATE_MOVIE } from '../apollo/Mutation'
+import { UPDATE_MOVIE } from '../apollo/Mutation'
 import { FETCH_MOVIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
-import { updatePoster } from '../redux/actions'
+import { updatePoster, setUpdatedPoster } from '../redux/actions'
 
 function EditItem ({ object, isVisible, closeModal, type, action }) {
   const dispatch = useDispatch()
   const isLoadingUploadImage = useSelector(state => state.movie.isLoadingUploadImage)
   const updatedImageFile = useSelector(state => state.movie.updatedImageFile)
+  const isUpdatedPoster = useSelector(state => state.movie.isUpdatedPoster)
   const [tags, handelInputTags] = useInputState('')
-  const [filePath, setFilePath] = useState('')
+  const [filePath, setFilePath] = useState(null)
   const [title, handleInputTitle] = useInputState('')
   const [overview, handleInputOverview] = useInputState('')
   const [popularity, handleInputPopularity] = useInputState('')
@@ -43,32 +44,9 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
                   title: updateMovie.title,
                   overview: updateMovie.overview,
                   popularity: updateMovie.popularity,
-                  tags: updateMovie.tags
-                }
-              } else {
-                return movie
-              }
-            })
-            cache.writeQuery({
-              query: FETCH_MOVIES,
-              data: { getMovies: newMovies }
-            })
-          }
-        }
-      )
-  const [updateMovieImage,
-    { loading: updateMovieImageLoading,
-      error: updateMovieImageError, data: updatedMovieImage }] = useMutation(
-        UPDATE_MOVIE_IMAGE,
-        {
-          update (cache, { data: { updateMovieImage } }) {
-            const { getMovies } = cache.readQuery({ query: FETCH_MOVIES })
-            const newMovies = getMovies.map(movie => {
-              if (movie._id === updateMovieImage._id) {
-                return {
-                  ...movie,
-                  poster_path: updateMovieImage.poster_path,
-                  delete_hash: updateMovieImage.delete_hash
+                  tags: updateMovie.tags,
+                  poster_path: updateMovie.poster_path,
+                  delete_hash: updateMovie.delete_hash
                 }
               } else {
                 return movie
@@ -83,24 +61,32 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
       )
 
   useEffect(() => {
-    if (updatedImageFile) {
-      updateMovieImage({
-        variables: {
-          input: {
-            id: object._id,
-            poster_path: updatedImageFile.link,
-            delete_hash: updatedImageFile.deletehash
+    if (isUpdatedPoster) {
+      if (updatedImageFile) {
+        updateMovie({
+          variables: {
+            input: {
+              id: object._id,
+              title,
+              overview,
+              popularity: +popularity,
+              tags: tags.toLowerCase().trim().split(','),
+              poster_path: updatedImageFile.link,
+              delete_hash: updatedImageFile.deletehash
+            }
           }
-        }
-      })
+        })
+      }
+      dispatch(setUpdatedPoster(false))
     }
-  }, [updatedImageFile])
+  }, [isUpdatedPoster])
 
   useEffect(() => {
-    if (updateMovieLoading) {
+    if (updatedMovie) {
+      setFilePath(null)
       closeModal()
     }
-  }, [updateMovieLoading])
+  }, [updatedMovie])
 
   const closeModalAdd = () => {
     closeModal()
@@ -148,23 +134,29 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
         alert(response.customButton)
       } else {
         setFilePath(response)
-        dispatch(updatePoster(response, object.delete_hash))
       }
     })
   }
 
   const saveItem = () => {
-    updateMovie({
-      variables: {
-        input: {
-          id: object._id,
-          title,
-          overview,
-          popularity: +popularity,
-          tags: tags.toLowerCase().trim().split(',')
+    console.log(filePath)
+    if (filePath) {
+      dispatch(updatePoster(filePath, object.delete_hash))
+    } else {
+      updateMovie({
+        variables: {
+          input: {
+            id: object._id,
+            title,
+            overview,
+            popularity: +popularity,
+            tags: tags.toLowerCase().trim().split(','),
+            poster_path: object.poster_path,
+            delete_hash: object.delete_hash
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   return (
@@ -247,17 +239,16 @@ function EditItem ({ object, isVisible, closeModal, type, action }) {
                     paddingTop: 10,
                     color: '#E50914',
                     fontWeight: 'bold',
-                    textAlign: 'center',
                     paddingBottom: 10
                   }} >Poster</Text>
                   <View style={styles.ImageSections}>
                     <View>
                       {renderFileData()}
-                      <Text style={{ textAlign: 'center' }}>Preview</Text>
                     </View>
                   </View>
                   <View style={styles.btnParentSection}>
-                    <TouchableOpacity onPress={chooseImage} style={styles.btnSection}>
+                    <TouchableOpacity onPress={chooseImage}
+                      style={styles.btnSection}>
                       <Text style={styles.btnText}>Choose File</Text>
                     </TouchableOpacity>
                   </View>
@@ -293,6 +284,7 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: Colors.white,
     justifyContent: 'center',
+    paddingLeft: 10
   },
   labelInput: {
     fontSize: 15,
@@ -301,25 +293,27 @@ const styles = StyleSheet.create({
   ImageSections: {
     display: 'flex',
     flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    justifyContent: 'center'
+    // paddingHorizontal: 8,
+    // paddingVertical: 8,
+    // justifyContent: 'center'
   },
   images: {
     width: 150,
     height: 150,
   },
   btnParentSection: {
-    alignItems: 'center',
-    marginTop: 10
+    // alignItems: 'center',
+    marginTop: 10,
+    flexDirection: 'row'
+    // justifyContent: 'center'
   },
   btnSection: {
-    width: 225,
+    width: 150,
     height: 50,
     backgroundColor: '#DCDCDC',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 3,
+    borderRadius: 10,
     marginBottom: 10
   },
   btnText: {

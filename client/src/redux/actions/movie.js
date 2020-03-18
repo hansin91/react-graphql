@@ -92,35 +92,29 @@ export const setUpdatedImage = (value) => ({
 export const updatePoster = (file, deleteHash) => dispatch => {
   dispatch(setLoadingUploadImage(true))
   dispatch(setUpdatedPoster(false))
-
   if (deleteHash) {
     imgurAPI({
       method: 'DELETE',
       url: '/' + deleteHash
     })
       .then(({ data }) => {
-        imgurAPI({
+        return imgurAPI({
           method: 'POST',
           data: {
             image: file.data,
             title: file.title
           }
         })
-          .then(({ data }) => {
-            dispatch(setUpdatedImage(data))
-            dispatch(setUpdatedPoster(true))
-          })
-          .catch(err => {
-            dispatch(setErrorMovies(err.response))
-            dispatch(setUpdatedPoster(false))
-          })
-          .finally(() => dispatch(setLoadingUploadImage(false)))
+      })
+      .then(({ data }) => {
+        dispatch(setUpdatedImage(data))
+        dispatch(setUpdatedPoster(true))
       })
       .catch(err => {
         dispatch(setErrorMovies(err.response))
-        dispatch(setLoadingUploadImage(false))
         dispatch(setUpdatedPoster(false))
       })
+      .finally(() => dispatch(setLoadingUploadImage(false)))
   } else {
     imgurAPI({
       method: 'POST',
@@ -139,6 +133,4 @@ export const updatePoster = (file, deleteHash) => dispatch => {
       })
       .finally(() => dispatch(setLoadingUploadImage(false)))
   }
-
-
 }

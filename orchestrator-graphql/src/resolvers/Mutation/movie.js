@@ -34,24 +34,6 @@ export const updateMovie = async (_, { input }) => {
   }
 }
 
-export const updateMovieImage = async (_, { input }) => {
-  try {
-    const { data } = await movieAPI({
-      method: 'PATCH',
-      url: '/' + input.id,
-      data: input
-    })
-    await redis.del('movies')
-    const response = await movieAPI({
-      method: 'GET',
-      url: '/' + input.id
-    })
-    return response.data.movie
-  } catch (error) {
-    return error.response
-  }
-}
-
 export const deleteMovie = async (_, { id }) => {
   try {
     const { data } = await movieAPI({

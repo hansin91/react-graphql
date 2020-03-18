@@ -23,7 +23,6 @@ const typeDef = gql`
   extend type Mutation {
     addMovie(input: createMovieInput!): Movie!
     updateMovie(input: updateMovieInput!): Movie!
-    updateMovieImage(input: updateMovieImage!): Movie!
     deleteMovie(id: ID!): Response!
   }
 
@@ -39,6 +38,8 @@ const typeDef = gql`
     overview: String!
     popularity: Float!
     tags: [String!]!
+    poster_path: String!
+    delete_hash: String!
   }
 
   input createMovieInput {
