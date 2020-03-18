@@ -43,7 +43,7 @@ class TVSeriController {
   static updateSerieMovie (req, res, next) {
     const db = req.db
     const tvSerieCollection = db.collection('tvSeries')
-    const { title, overview, poster_path, popularity, tags } = req.body
+    const { title, overview, poster_path, popularity, tags, delete_hash } = req.body
     const { id } = req.params
     const params = {
       id,
@@ -51,7 +51,8 @@ class TVSeriController {
       overview,
       poster_path,
       popularity,
-      tags
+      tags,
+      delete_hash
     }
     TVSerie.updateSerieMovie(tvSerieCollection, params)
       .then(response => {

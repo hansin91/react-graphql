@@ -28,33 +28,20 @@ export const deleteTVSerie = async (_, { id }) => {
   }
 }
 
-// export const updateMovie = async (_, { input }) => {
-//   try {
-//     const { data } = await movieAPI({
-//       method: 'PUT',
-//       url: '/' + input.id,
-//       data: input
-//     })
-//     await redis.del('movies')
-//     const response = await movieAPI({
-//       method: 'GET',
-//       url: '/' + input.id
-//     })
-//     return response.data.movie
-//   } catch (error) {
-//     return error.response
-//   }
-// }
-
-// export const deleteMovie = async (_, { id }) => {
-//   try {
-//     const { data } = await movieAPI({
-//       method: 'DELETE',
-//       url: '/' + id
-//     })
-//     await redis.del('movies')
-//     return data
-//   } catch (error) {
-//     return error.response
-//   }
-// }
+export const updateTVSerie = async (_, { input }) => {
+  try {
+    const { data } = await tvSerieAPI({
+      method: 'PUT',
+      url: '/' + input.id,
+      data: input
+    })
+    await redis.del('tvSeries')
+    const response = await tvSerieAPI({
+      method: 'GET',
+      url: '/' + input.id
+    })
+    return response.data.tvSerie
+  } catch (error) {
+    return error.response
+  }
+}

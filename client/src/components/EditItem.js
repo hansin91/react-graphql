@@ -15,14 +15,17 @@ import { Input, Image } from 'react-native-elements'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
-import { UPDATE_MOVIE } from '../apollo/Mutation'
-import { FETCH_MOVIES } from '../apollo/Query'
+import { UPDATE_MOVIE, UPDATE_TV_SERIE } from '../apollo/Mutation'
+import { FETCH_MOVIES, FETCH_TV_SERIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
-import { updatePoster, setUpdatedPoster } from '../redux/actions'
+import { updatePoster, setUpdatedPoster, editMovie, editTVSerie, setIsEditTVSerie, setImageFile, setIsEditMovie } from '../redux/actions'
 
 function EditItem ({ object, isVisible, closeModal, type }) {
   const dispatch = useDispatch()
-  const isLoadingUploadImage = useSelector(state => state.movie.isLoadingUploadImage)
+  const isLoadingUploadImage = useSelector(state => state.common.isLoadingUploadImage)
+  const imageFile = useSelector(state => state.common.imageFile)
+  const isEditTVSerie = useSelector(state => state.tvSerie.isEditTVSerie)
+  const isEditMovie = useSelector(state => state.movie.isEditMovie)
   const updatedImageFile = useSelector(state => state.movie.updatedImageFile)
   const isUpdatedPoster = useSelector(state => state.movie.isUpdatedPoster)
   const [tags, handelInputTags] = useInputState('')
@@ -59,6 +62,96 @@ function EditItem ({ object, isVisible, closeModal, type }) {
           }
         }
       )
+
+  const [updateTVSerie,
+    { loading: updateTVSerieLoading,
+      error: updateTVSerieError, data: updatedTVSerie }] = useMutation(
+        UPDATE_TV_SERIE,
+        {
+          update (cache, { data: { updateTVSerie } }) {
+            const { getTVSeries } = cache.readQuery({ query: FETCH_TV_SERIES })
+            const newTVSeries = getTVSeries.map(tvSerie => {
+              if (tvSerie._id === updateTVSerie._id) {
+                return {
+                  ...tvSerie,
+                  title: updateTVSerie.title,
+                  overview: updateTVSerie.overview,
+                  popularity: updateTVSerie.popularity,
+                  tags: updateTVSerie.tags,
+                  poster_path: updateTVSerie.poster_path,
+                  delete_hash: updateTVSerie.delete_hash
+                }
+              } else {
+                return tvSerie
+              }
+            })
+            cache.writeQuery({
+              query: FETCH_TV_SERIES,
+              data: { getTVSeries: newTVSeries }
+            })
+          }
+        }
+      )
+
+  const resetAndCloseModal = () => {
+    closeModal()
+    setFilePath(null)
+    dispatch(setImageFile(null))
+  }
+
+  useEffect(() => {
+    if (updatedTVSerie) {
+      resetAndCloseModal()
+    }
+  }, [updatedTVSerie])
+
+  useEffect(() => {
+    if (updatedMovie) {
+      resetAndCloseModal()
+    }
+  }, [updatedMovie])
+
+  useEffect(() => {
+    if (isEditMovie) {
+      if (imageFile) {
+        updateMovie({
+          variables: {
+            input: {
+              id: object._id,
+              title,
+              overview,
+              popularity: +popularity,
+              tags: tags.toLowerCase().trim().split(','),
+              poster_path: imageFile.link,
+              delete_hash: imageFile.deletehash
+            }
+          }
+        })
+      }
+      dispatch(setIsEditMovie(false))
+    }
+  }, [isEditMovie])
+
+  useEffect(() => {
+    if (isEditTVSerie) {
+      if (imageFile) {
+        updateTVSerie({
+          variables: {
+            input: {
+              id: object._id,
+              title,
+              overview,
+              popularity: +popularity,
+              tags: tags.toLowerCase().trim().split(','),
+              poster_path: imageFile.link,
+              delete_hash: imageFile.deletehash
+            }
+          }
+        })
+      }
+      dispatch(setIsEditTVSerie(false))
+    }
+  }, [isEditTVSerie])
 
   useEffect(() => {
     if (isUpdatedPoster) {
@@ -141,23 +234,45 @@ function EditItem ({ object, isVisible, closeModal, type }) {
   }
 
   const saveItem = () => {
-    console.log(filePath)
-    if (filePath) {
-      dispatch(updatePoster(filePath, object.delete_hash))
-    } else {
-      updateMovie({
-        variables: {
-          input: {
-            id: object._id,
-            title,
-            overview,
-            popularity: +popularity,
-            tags: tags.toLowerCase().trim().split(','),
-            poster_path: object.poster_path,
-            delete_hash: object.delete_hash
+
+    if (type === 'tvserie') {
+      if (filePath) {
+        dispatch(editTVSerie(filePath, object.delete_hash))
+      } else {
+        updateTVSerie({
+          variables: {
+            input: {
+              id: object._id,
+              title,
+              overview,
+              popularity: +popularity,
+              tags: tags.toLowerCase().trim().split(','),
+              poster_path: object.poster_path,
+              delete_hash: object.delete_hash
+            }
           }
-        }
-      })
+        })
+      }
+    }
+
+    if (type === 'movie') {
+      if (filePath) {
+        dispatch(editMovie(filePath, object.delete_hash))
+      } else {
+        updateMovie({
+          variables: {
+            input: {
+              id: object._id,
+              title,
+              overview,
+              popularity: +popularity,
+              tags: tags.toLowerCase().trim().split(','),
+              poster_path: object.poster_path,
+              delete_hash: object.delete_hash
+            }
+          }
+        })
+      }
     }
   }
 
@@ -255,7 +370,7 @@ function EditItem ({ object, isVisible, closeModal, type }) {
                   </View>
                 </View>
               </View>
-              {!isLoadingUploadImage &&
+              {(!isLoadingUploadImage) &&
                 <View style={{
                   marginTop: 10,
                   marginBottom: 10,
@@ -269,7 +384,7 @@ function EditItem ({ object, isVisible, closeModal, type }) {
                     <Text style={[styles.btnFooterModal, styles.btnFooterModalSave]}>Save</Text>
                   </TouchableOpacity>
                 </View>}
-              {isLoadingUploadImage &&
+              {(isLoadingUploadImage) &&
                 <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
                   <ActivityIndicator />
                 </View>}

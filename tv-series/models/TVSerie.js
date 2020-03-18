@@ -17,11 +17,11 @@ class TVSerie {
   }
 
   static updateSerieMovie (collection, params) {
-    const { id, title, overview, poster_path, popularity, tags } = params
+    const { id, title, overview, poster_path, popularity, tags, delete_hash } = params
     return collection.updateOne({ _id: ObjectID(id) },
       {
         $set:
-          { title, overview, poster_path, popularity, tags }
+          { title, overview, poster_path, popularity, tags, delete_hash }
       })
   }
 

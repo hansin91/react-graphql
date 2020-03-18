@@ -13,19 +13,19 @@ export const ADD_TV_SERIE = gql`
   }
 `
 
-// export const UPDATE_MOVIE = gql`
-//   mutation UpdateMovie ($input: updateMovieInput!) {
-//     updateMovie(input: $input) {
-//       _id
-//       title
-//       overview
-//       popularity
-//       poster_path
-//       tags
-//       delete_hash
-//     }
-//   }
-// `
+export const UPDATE_TV_SERIE = gql`
+  mutation UpdateTVSerie ($input: updateTVSerieInput!) {
+    updateTVSerie(input: $input) {
+      _id
+      title
+      overview
+      popularity
+      poster_path
+      tags
+      delete_hash
+    }
+  }
+`
 
 export const DELETE_TV_SERIE = gql`
   mutation DeleteTVSerie ($id: ID!) {

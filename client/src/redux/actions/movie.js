@@ -1,15 +1,12 @@
 import {
-  SET_ERROR_MOVIES,
-  SET_UPDATED_POSTER,
-  SET_UPDATED_IMAGE,
-  SET_IS_CREATED_FILE,
-  SET_IS_ADD_MOVIE
+  SET_IS_ADD_MOVIE,
+  SET_IS_EDIT_MOVIE
 } from './type'
 import imgurAPI from '../../api/imgurAPI'
 import { setLoadingUploadImage, setImageFile, setErrors } from './common'
 
-export const setUpdatedPoster = (value) => ({
-  type: SET_UPDATED_POSTER,
+export const setIsEditMovie = (value) => ({
+  type: SET_IS_EDIT_MOVIE,
   payload: value
 })
 
@@ -41,14 +38,9 @@ export const addNewMovie = (file) => (dispatch) => {
     })
 }
 
-export const setUpdatedImage = (value) => ({
-  type: SET_UPDATED_IMAGE,
-  payload: value
-})
-
-export const updatePoster = (file, deleteHash) => dispatch => {
+export const editMovie = (file, deleteHash) => dispatch => {
   dispatch(setLoadingUploadImage(true))
-  dispatch(setUpdatedPoster(false))
+  dispatch(setIsEditMovie(false))
   if (deleteHash) {
     imgurAPI({
       method: 'DELETE',
@@ -64,12 +56,12 @@ export const updatePoster = (file, deleteHash) => dispatch => {
         })
       })
       .then(({ data }) => {
-        dispatch(setUpdatedImage(data))
-        dispatch(setUpdatedPoster(true))
+        dispatch(setImageFile(data))
+        dispatch(setIsEditMovie(true))
       })
       .catch(err => {
-        dispatch(setErrorMovies(err.response))
-        dispatch(setUpdatedPoster(false))
+        dispatch(setErrors(err.response))
+        dispatch(setIsEditMovie(false))
       })
       .finally(() => dispatch(setLoadingUploadImage(false)))
   } else {
@@ -81,12 +73,12 @@ export const updatePoster = (file, deleteHash) => dispatch => {
       }
     })
       .then(({ data }) => {
-        dispatch(setUpdatedImage(data))
-        dispatch(setUpdatedPoster(true))
+        dispatch(setImageFile(data))
+        dispatch(setIsEditMovie(true))
       })
       .catch(err => {
-        dispatch(setErrorMovies(err.response))
-        dispatch(setUpdatedPoster(false))
+        dispatch(setErrors(err.response))
+        dispatch(setIsEditMovie(false))
       })
       .finally(() => dispatch(setLoadingUploadImage(false)))
   }

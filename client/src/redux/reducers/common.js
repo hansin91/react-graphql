@@ -15,7 +15,7 @@ export default function reducers (state = initialState, action) {
     case SET_IMAGE_FILE:
       return {
         ...state,
-        imageFile: action.payload.data
+        imageFile: action.payload ? action.payload.data : null
       }
     case SET_ERRORS:
       return {
