@@ -12,6 +12,7 @@ const typeDef = gql`
 
   extend type Query {
     getTVSeries: [TVSerie]!
+    getTVSerie(id: ID!): TVSerie!
   }
 
   extend type Mutation {

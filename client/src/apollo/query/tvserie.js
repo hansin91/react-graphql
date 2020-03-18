@@ -11,3 +11,17 @@ export const FETCH_TV_SERIES = gql`
   }
 }
 `
+export const FETCH_TV_SERIE = gql`
+  query GetTVSerie ($id: ID!)
+  {
+    getTVSerie(id: $id){
+      _id
+      title
+      overview
+      poster_path
+      popularity
+      tags
+      delete_hash
+    }
+  }
+`

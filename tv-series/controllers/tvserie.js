@@ -106,7 +106,7 @@ class TVSeriController {
       .then(response => {
         res.status(200).json({
           status: 200,
-          tvSeries: response
+          tvSerie: response
         })
       })
       .catch(err => {

@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import HeaderScreen from '../components/Header'
 import HomeScreen from '../screens/Home'
 import Movie from '../stacks/Movie'
-import TVSerie from '../stacks/TVserie'
+import TVSerie from './TVSerie'
 const Stack = createStackNavigator()
 function Home ({ navigation }) {
   return (

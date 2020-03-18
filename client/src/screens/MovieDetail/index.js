@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ScrollView, View, Text } from 'react-native'
+import { ScrollView } from 'react-native'
 import { Container } from 'native-base'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_MOVIE } from '../../apollo/Query'
@@ -7,6 +7,7 @@ import CircularLoading from '../../components/CircularLoading'
 import ItemDetail from '../../components/ItemDetail'
 import DeleteItem from '../../components/DeleteItem'
 import EditItem from '../../components/EditItem'
+import Alert from '../../components/Alert'
 
 function MovieDetail ({ route, navigation }) {
   const { id } = route.params
@@ -33,7 +34,8 @@ function MovieDetail ({ route, navigation }) {
   }
 
   if (loading) return <CircularLoading />
-  if (data && !loading && !error) {
+  if (!loading && error) return <Alert type="error" message={error} />
+  if (!loading && !error && data)
     return (
       <Container style={{
         backgroundColor: '#141414',
@@ -46,7 +48,6 @@ function MovieDetail ({ route, navigation }) {
           isVisible={isOpenDeleteModal} />
         <EditItem
           type={type}
-          action="edit"
           object={data.getMovie}
           closeModal={closeModal}
           isVisible={isOpen} />
@@ -58,13 +59,6 @@ function MovieDetail ({ route, navigation }) {
         </ScrollView>
       </Container>
     )
-  } else {
-    return (
-      <View>
-        <Text></Text>
-      </View>
-    )
-  }
 }
 
 export default MovieDetail
