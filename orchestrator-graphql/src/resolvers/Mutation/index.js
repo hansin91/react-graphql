@@ -1,11 +1,12 @@
 import { addMovie, updateMovie, deleteMovie } from './movie'
-import { addTVSerie } from './tvserie'
+import { addTVSerie, deleteTVSerie } from './tvserie'
 
 const Mutation = {
   addMovie,
   updateMovie,
   deleteMovie,
-  addTVSerie
+  addTVSerie,
+  deleteTVSerie
 }
 
 export default Mutation

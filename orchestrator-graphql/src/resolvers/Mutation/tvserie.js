@@ -15,6 +15,19 @@ export const addTVSerie = async (_, { input }) => {
   }
 }
 
+export const deleteTVSerie = async (_, { id }) => {
+  try {
+    const { data } = await tvSerieAPI({
+      method: 'DELETE',
+      url: '/' + id
+    })
+    await redis.del('tvSeries')
+    return data
+  } catch (error) {
+    return error.response
+  }
+}
+
 // export const updateMovie = async (_, { input }) => {
 //   try {
 //     const { data } = await movieAPI({

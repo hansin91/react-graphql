@@ -1,4 +1,5 @@
 import TVSerie from '../models/TVSerie'
+import axios from 'axios'
 
 class TVSeriController {
   static fetchSerieMovies (req, res, next) {
@@ -77,25 +78,46 @@ class TVSeriController {
   static deleteSerieMovie (req, res, next) {
     const db = req.db
     const tvSerieCollection = db.collection('tvSeries')
-    TVSerie.deleteSerieMovie(tvSerieCollection, req.params.id)
-      .then(response => {
-        const deletedCount = response.deletedCount
-        if (deletedCount) {
-          res.status(200).json({
-            status: 200,
-            message: 'Delete serie movie successfully'
-          })
-        } else {
-          next({
-            status: 404,
-            name: 'NOT_FOUND',
-            message: 'Serie movie is not found'
-          })
-        }
-      })
-      .catch(err => {
-        next(err)
-      })
+    const id = req.params.id
+    try {
+      TVSerie.findOne(tvSerieCollection, id)
+        .then(async (response) => {
+          if (response.delete_hash) {
+            await axios({
+              method: 'DELETE',
+              url: 'https://api.imgur.com/3/image/' + response.delete_hash,
+              headers: {
+                'Authorization': 'Client-ID 0e81df2dc44ab43',
+                'Content-Type': 'application/json'
+              }
+            })
+          }
+          TVSerie.deleteSerieMovie(tvSerieCollection, req.params.id)
+            .then(response => {
+              const deletedCount = response.deletedCount
+              if (deletedCount) {
+                res.status(200).json({
+                  status: 200,
+                  message: 'Delete serie movie successfully'
+                })
+              } else {
+                next({
+                  status: 404,
+                  name: 'NOT_FOUND',
+                  message: 'Serie movie is not found'
+                })
+              }
+            })
+            .catch(err => {
+              next(err)
+            })
+        })
+        .catch(err => {
+          next(err)
+        })
+    } catch (error) {
+      next(error)
+    }
   }
 
   static findOne (req, res, next) {

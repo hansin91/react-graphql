@@ -11,7 +11,6 @@ export const addMovie = async (_, { input }) => {
     await redis.del('movies')
     return data.newMovie
   } catch (error) {
-    console.log(error)
     return error.response
   }
 }

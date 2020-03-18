@@ -27,11 +27,11 @@ export const ADD_TV_SERIE = gql`
 //   }
 // `
 
-// export const DELETE_MOVIE = gql`
-//   mutation DeleteMovie ($id: ID!) {
-//     deleteMovie(id: $id) {
-//       status
-//       message
-//     }
-//   }
-// `
+export const DELETE_TV_SERIE = gql`
+  mutation DeleteTVSerie ($id: ID!) {
+    deleteTVSerie(id: $id) {
+      status
+      message
+    }
+  }
+`
