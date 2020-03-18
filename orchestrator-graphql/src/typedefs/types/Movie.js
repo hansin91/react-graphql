@@ -10,11 +10,6 @@ const typeDef = gql`
     delete_hash: String
   }
 
-  type Response {
-    status: Int
-    message: String
-  }
-
   extend type Query {
     getMovies: [Movie]!
     getMovie(id: ID!): Movie!

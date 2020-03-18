@@ -17,13 +17,14 @@ class TVSeriController {
   static insertSerieMovie (req, res, next) {
     const db = req.db
     const tvSerieCollection = db.collection('tvSeries')
-    const { title, overview, poster_path, popularity, tags } = req.body
+    const { title, overview, poster_path, popularity, tags, delete_hash } = req.body
     const params = {
       title,
       overview,
       poster_path,
       popularity,
-      tags
+      tags,
+      delete_hash
     }
     TVSerie.addSerieMovie(tvSerieCollection, params)
       .then(response => {

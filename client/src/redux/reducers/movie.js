@@ -1,10 +1,8 @@
 import {
-  SET_MOVIES,
   SET_ERROR_MOVIES,
-  SET_LOADING_MOVIES,
   SET_LOADING_UPLOAD_IMAGE,
   SET_CREATED_FILE,
-  SET_IS_CREATED_FILE,
+  SET_IS_ADD_MOVIE,
   SET_UPDATED_POSTER,
   SET_UPDATED_IMAGE
 } from '../actions/type'
@@ -15,8 +13,8 @@ const initialState = {
   message: '',
   isLoading: false,
   isLoadingUploadImage: null,
-  createdImageFile: '',
-  isCreatedImageFile: false,
+  createdImageFile: null,
+  isAddMovie: false,
   isUpdatedPoster: false,
   updatedImageFile: ''
 }
@@ -28,10 +26,10 @@ export default function reducers (state = initialState, action) {
         ...state,
         updatedImageFile: action.payload.data
       }
-    case SET_IS_CREATED_FILE:
+    case SET_IS_ADD_MOVIE:
       return {
         ...state,
-        isCreatedImageFile: action.payload
+        isAddMovie: action.payload
       }
     case SET_UPDATED_POSTER:
       return {
@@ -47,16 +45,6 @@ export default function reducers (state = initialState, action) {
       return {
         ...state,
         isLoadingUploadImage: action.payload
-      }
-    case SET_MOVIES:
-      return {
-        ...state,
-        movies: action.payload ? action.payload.getMovies : []
-      }
-    case SET_LOADING_MOVIES:
-      return {
-        ...state,
-        isLoading: action.payload
       }
     case SET_ERROR_MOVIES:
       return {

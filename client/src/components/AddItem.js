@@ -15,16 +15,27 @@ import { Input, Image } from 'react-native-elements'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
-import { ADD_MOVIE } from '../apollo/Mutation'
-import { FETCH_MOVIES } from '../apollo/Query'
+import { ADD_MOVIE, ADD_TV_SERIE } from '../apollo/Mutation'
+import { FETCH_MOVIES, FETCH_TV_SERIES } from '../apollo/Query'
 import useInputState from '../hooks/useInputState'
-import { uploadImage, setIsCreatedFile } from '../redux/actions'
+import {
+  uploadImage,
+  setIsCreatedFile,
+  setCreatedFile,
+  setImageFile,
+  setIsCreatedFileTVSerie,
+  addNewTVSerie,
+  setIsAddTVSerie,
+  addNewMovie,
+  setIsAddMovie
+} from '../redux/actions'
 
-function AddItem ({ object, isVisible, closeModal, type, action }) {
+function AddItem ({ object, isVisible, closeModal, type }) {
   const dispatch = useDispatch()
-  const isLoadingUploadImage = useSelector(state => state.movie.isLoadingUploadImage)
-  const createdImageFile = useSelector(state => state.movie.createdImageFile)
-  const isCreatedImageFile = useSelector(state => state.movie.isCreatedImageFile)
+  const isLoading = useSelector(state => state.common.isLoadingUploadImage)
+  const imageFile = useSelector(state => state.common.imageFile)
+  const isAddMovie = useSelector(state => state.movie.isAddMovie)
+  const isAddTVSerie = useSelector(state => state.tvSerie.isAddTVSerie)
   const [tags, handelInputTags] = useInputState('')
   const [filePath, setFilePath] = useState('')
   const [title, handleInputTitle] = useInputState('')
@@ -45,31 +56,77 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
         }
       )
 
+  const [addTVSerie,
+    { loading: loadingAddTVSerie,
+      error: errorAddTVSerie, data: newTVSerie }] = useMutation(
+        ADD_TV_SERIE,
+        {
+          update (cache, { data: { addTVSerie } }) {
+            const { getTVSeries } = cache.readQuery({ query: FETCH_TV_SERIES })
+            cache.writeQuery({
+              query: FETCH_TV_SERIES,
+              data: { getTVSeries: getTVSeries.concat([addTVSerie]) }
+            })
+          }
+        }
+      )
+
+  const resetAndCloseModal = () => {
+    closeModal()
+    setFilePath(null)
+    dispatch(setImageFile(''))
+  }
+
   useEffect(() => {
     if (newMovie) {
-      setFilePath('')
-      closeModal()
+      resetAndCloseModal()
     }
   }, [newMovie])
 
   useEffect(() => {
-    if (isCreatedImageFile) {
-      if (createdImageFile) {
+    if (newTVSerie) {
+      resetAndCloseModal()
+    }
+  }, [newTVSerie])
+
+  useEffect(() => {
+    if (isAddTVSerie) {
+      if (imageFile) {
         const newItem = {
           title,
           popularity: +popularity,
           overview,
           tags: tags.toLowerCase().trim().split(','),
-          poster_path: createdImageFile.link,
-          delete_hash: createdImageFile.deletehash
+          poster_path: imageFile.link,
+          delete_hash: imageFile.deletehash
+        }
+        if (type === 'tvserie') {
+          addTVSerie({ variables: { input: newItem } })
+        }
+      }
+      dispatch(setIsAddTVSerie(false))
+    }
+
+  }, [isAddTVSerie])
+
+  useEffect(() => {
+    if (isAddMovie) {
+      if (imageFile) {
+        const newItem = {
+          title,
+          popularity: +popularity,
+          overview,
+          tags: tags.toLowerCase().trim().split(','),
+          poster_path: imageFile.link,
+          delete_hash: imageFile.deletehash
         }
         if (type === 'movie') {
           addMovie({ variables: { input: newItem } })
         }
       }
-      dispatch(setIsCreatedFile(false))
+      dispatch(setIsAddMovie(false))
     }
-  }, [isCreatedImageFile])
+  }, [isAddMovie])
 
   const closeModalAdd = () => {
     closeModal()
@@ -122,7 +179,13 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
   }
 
   const saveItem = () => {
-    dispatch(uploadImage(filePath, 'add'))
+    if (type === 'movie') {
+      dispatch(addNewMovie(filePath))
+    }
+
+    if (type === 'tvserie') {
+      dispatch(addNewTVSerie(filePath))
+    }
   }
 
   return (
@@ -218,7 +281,7 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
                   </View>
                 </View>
               </View>
-              {!isLoadingUploadImage &&
+              {!isLoading &&
                 <View style={{
                   marginTop: 10,
                   marginBottom: 10,
@@ -232,7 +295,7 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
                     <Text style={[styles.btnFooterModal, styles.btnFooterModalSave]}>Save</Text>
                   </TouchableOpacity>
                 </View>}
-              {isLoadingUploadImage &&
+              {isLoading &&
                 <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
                   <ActivityIndicator />
                 </View>}
