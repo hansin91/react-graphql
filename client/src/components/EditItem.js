@@ -293,19 +293,14 @@ const styles = StyleSheet.create({
   ImageSections: {
     display: 'flex',
     flexDirection: 'row',
-    // paddingHorizontal: 8,
-    // paddingVertical: 8,
-    // justifyContent: 'center'
   },
   images: {
     width: 150,
     height: 150,
   },
   btnParentSection: {
-    // alignItems: 'center',
     marginTop: 10,
     flexDirection: 'row'
-    // justifyContent: 'center'
   },
   btnSection: {
     width: 150,

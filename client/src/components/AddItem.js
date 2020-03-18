@@ -205,13 +205,11 @@ function AddItem ({ object, isVisible, closeModal, type, action }) {
                     paddingTop: 10,
                     color: '#E50914',
                     fontWeight: 'bold',
-                    textAlign: 'center',
                     paddingBottom: 10
                   }} >Poster</Text>
                   <View style={styles.ImageSections}>
                     <View>
                       {renderFileData()}
-                      <Text style={{ textAlign: 'center' }}>Preview</Text>
                     </View>
                   </View>
                   <View style={styles.btnParentSection}>
@@ -251,6 +249,7 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: Colors.white,
     justifyContent: 'center',
+    paddingLeft: 10
   },
   labelInput: {
     fontSize: 15,
@@ -259,25 +258,21 @@ const styles = StyleSheet.create({
   ImageSections: {
     display: 'flex',
     flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    justifyContent: 'center'
   },
   images: {
     width: 150,
     height: 150,
   },
   btnParentSection: {
-    alignItems: 'center',
     marginTop: 10
   },
   btnSection: {
-    width: 225,
+    width: 150,
     height: 50,
     backgroundColor: '#DCDCDC',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 3,
+    borderRadius: 10,
     marginBottom: 10
   },
   btnText: {
