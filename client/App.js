@@ -9,7 +9,6 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import store from './src/redux/store'
 import client from './src/apollo/client'
 import Home from './src/stacks/Home'
-const Drawer = createDrawerNavigator()
 const Tab = createBottomTabNavigator()
 function App () {
   return (
