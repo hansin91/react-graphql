@@ -1,6 +1,5 @@
 import 'react-native-gesture-handler'
 import React from 'react'
-import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 import { Provider } from 'react-redux'
